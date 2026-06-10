@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>InSight — Compatibility</title>
+<link rel="stylesheet" href="style.css" />
+<style>
+.compat-hero { padding-top: 140px; text-align: center; padding-bottom: 60px; }
+.compat-hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(48px, 6vw, 80px); font-weight: 300; margin-bottom: 16px; }
+.compat-hero p { font-size: 16px; color: var(--text2); }
+
+.compat-form-wrap {
+  max-width: 900px;
+  margin: 0 auto 80px;
+  padding: 0 80px;
+}
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 60px 1fr;
+  gap: 20px;
+  align-items: end;
+  margin-bottom: 32px;
+}
+.two-col .divider-icon {
+  text-align: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px;
+  color: var(--gold);
+  opacity: 0.5;
+  padding-bottom: 12px;
+}
+.person-col { display: flex; flex-direction: column; gap: 14px; }
+.person-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border2);
+  padding-bottom: 10px;
+  margin-bottom: 4px;
+}
+
+/* Result */
+.compat-result { max-width: 900px; margin: 0 auto; padding: 0 80px 100px; display: none; }
+.compat-result.visible { display: block; animation: fadeUp 0.6s forwards; }
+
+.score-banner {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 48px;
+  text-align: center;
+  margin-bottom: 2px;
+}
+.score-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 100px;
+  font-weight: 300;
+  color: var(--gold2);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.score-label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--text3); text-transform: uppercase; }
+
+.compat-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--border2); }
+.compat-section { background: var(--bg); padding: 40px; }
+.compat-section.full { grid-column: 1 / -1; }
+.compat-section h3 { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: var(--gold); text-transform: uppercase; margin-bottom: 16px; }
+.compat-section p { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; line-height: 1.75; color: var(--text2); }
+
+.compat-meters { display: grid; grid-template-columns: 1fr; gap: 16px; }
+.cmeter { display: grid; grid-template-columns: 100px 1fr 40px; align-items: center; gap: 16px; }
+.cmeter-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; }
+.cmeter-bar { height: 2px; background: var(--border2); }
+.cmeter-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--teal)); transition: width 1s ease; }
+.cmeter-val { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--gold2); text-align: right; }
+</style>
+</head>
+<body>
+<div class="cursor"></div>
+<div class="cursor-ring"></div>
+<canvas id="starfield"></canvas>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-mark"></div>
+    InSight
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="reading.html">Get Reading</a></li>
+    <li><a href="horoscope.html">Horoscope</a></li>
+    <li><a href="compatibility.html">Compatibility</a></li>
+    <li><a href="blog.html">Journal</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <a href="reading.html" class="nav-cta">Begin Reading</a>
+</nav>
+
+<main class="page">
+  <div class="compat-hero fade-up">
+    <span class="eyebrow">Cosmic Synastry</span>
+    <h1>Are you written<br>in the stars?</h1>
+    <p>Enter both birth charts and discover your cosmic compatibility score</p>
+  </div>
+
+  <div class="compat-form-wrap fade-up delay-1">
+    <div class="two-col">
+      <div class="person-col">
+        <div class="person-label">Person One</div>
+        <div class="field-group"><label>Name</label><input type="text" id="name1" placeholder="Their name" /></div>
+        <div class="field-group"><label>Date of Birth</label><input type="date" id="dob1" /></div>
+        <div class="field-group"><label>Birth Time</label><input type="time" id="time1" /></div>
+        <div class="field-group"><label>Birth Place</label><input type="text" id="place1" placeholder="City, Country" /></div>
+      </div>
+      <div class="divider-icon">♡</div>
+      <div class="person-col">
+        <div class="person-label">Person Two</div>
+        <div class="field-group"><label>Name</label><input type="text" id="name2" placeholder="Their name" /></div>
+        <div class="field-group"><label>Date of Birth</label><input type="date" id="dob2" /></div>
+        <div class="field-group"><label>Birth Time</label><input type="time" id="time2" /></div>
+        <div class="field-group"><label>Birth Place</label><input type="text" id="place2" placeholder="City, Country" /></div>
+      </div>
+    </div>
+    <button class="btn-primary" style="width:100%;justify-content:center;" onclick="getCompatibility()">
+      Reveal Compatibility Reading ↗
+    </button>
+  </div>
+
+  <div class="compat-result" id="compatResult">
+    <div class="score-banner">
+      <div class="score-num" id="scoreNum">—</div>
+      <div class="score-label" id="scoreLabel">Cosmic Compatibility Score</div>
+    </div>
+    <div class="compat-sections">
+      <div class="compat-section full">
+        <h3>Overall Synastry</h3>
+        <p id="overallText"></p>
+      </div>
+      <div class="compat-section">
+        <h3>Love & Romance</h3>
+        <p id="loveText"></p>
+      </div>
+      <div class="compat-section">
+        <h3>Communication</h3>
+        <p id="commText"></p>
+      </div>
+      <div class="compat-section">
+        <h3>Cosmic Meters</h3>
+        <div class="compat-meters">
+          <div class="cmeter"><span class="cmeter-label">Emotional</span><div class="cmeter-bar"><div class="cmeter-fill" id="m1" style="width:0%"></div></div><span class="cmeter-val" id="mv1">—</span></div>
+          <div class="cmeter"><span class="cmeter-label">Physical</span><div class="cmeter-bar"><div class="cmeter-fill" id="m2" style="width:0%"></div></div><span class="cmeter-val" id="mv2">—</span></div>
+          <div class="cmeter"><span class="cmeter-label">Intellectual</span><div class="cmeter-bar"><div class="cmeter-fill" id="m3" style="width:0%"></div></div><span class="cmeter-val" id="mv3">—</span></div>
+          <div class="cmeter"><span class="cmeter-label">Spiritual</span><div class="cmeter-bar"><div class="cmeter-fill" id="m4" style="width:0%"></div></div><span class="cmeter-val" id="mv4">—</span></div>
+        </div>
+      </div>
+      <div class="compat-section">
+        <h3>Growth Together</h3>
+        <p id="growthText"></p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-logo">InSight</div>
+  <ul class="footer-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="reading.html">Reading</a></li>
+    <li><a href="horoscope.html">Horoscope</a></li>
+    <li><a href="compatibility.html">Compatibility</a></li>
+    <li><a href="blog.html">Journal</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <p class="footer-copy">© 2025 InSight. All rights reserved.</p>
+</footer>
+
+<script src="main.js"></script>
+<script>
+async function getCompatibility() {
+  const n1 = document.getElementById('name1').value.trim();
+  const d1 = document.getElementById('dob1').value;
+  const t1 = document.getElementById('time1').value;
+  const p1 = document.getElementById('place1').value.trim();
+  const n2 = document.getElementById('name2').value.trim();
+  const d2 = document.getElementById('dob2').value;
+  const t2 = document.getElementById('time2').value;
+  const p2 = document.getElementById('place2').value.trim();
+
+  if (!n1 || !d1 || !n2 || !d2) { alert('Please fill in at least names and birth dates for both people.'); return; }
+
+  const result = document.getElementById('compatResult');
+  result.classList.remove('visible');
+  document.querySelector('.btn-primary').textContent = 'Reading the stars…';
+  document.querySelector('.btn-primary').disabled = true;
+
+  const prompt = `You are InSight, a sophisticated cosmic compatibility oracle. Analyse the synastry between:
+Person 1: ${n1}, born ${d1}${t1?' at '+t1:''}, ${p1||'unknown location'}
+Person 2: ${n2}, born ${d2}${t2?' at '+t2:''}, ${p2||'unknown location'}
+
+Respond ONLY with valid JSON (no markdown, no backticks):
+{
+  "score": 78,
+  "overall": "3 sentences on their cosmic connection. Poetic, insightful, specific.",
+  "love": "2 sentences on romantic and emotional compatibility.",
+  "communication": "2 sentences on how they communicate and think together.",
+  "growth": "2 sentences on what they can build and learn together.",
+  "emotional": 82,
+  "physical": 74,
+  "intellectual": 88,
+  "spiritual": 70
+}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await res.json();
+    const r = JSON.parse(data.content?.find(b => b.type === 'text')?.text.replace(/```json|```/g, '').trim() || '{}');
+
+    document.getElementById('scoreNum').textContent = (r.score || 75) + '%';
+    document.getElementById('overallText').textContent = r.overall || '';
+    document.getElementById('loveText').textContent = r.love || '';
+    document.getElementById('commText').textContent = r.communication || '';
+    document.getElementById('growthText').textContent = r.growth || '';
+    setTimeout(() => {
+      [['m1','mv1',r.emotional||75],['m2','mv2',r.physical||75],['m3','mv3',r.intellectual||75],['m4','mv4',r.spiritual||75]].forEach(([m,mv,v]) => {
+        document.getElementById(m).style.width = v + '%';
+        document.getElementById(mv).textContent = v + '%';
+      });
+    }, 400);
+    result.classList.add('visible');
+    result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch(e) {
+    alert('Something went wrong. Please try again.');
+  }
+
+  document.querySelector('.btn-primary').textContent = 'Reveal Compatibility Reading ↗';
+  document.querySelector('.btn-primary').disabled = false;
+}
+</script>
+</body>
+</html>

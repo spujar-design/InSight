@@ -745,11 +745,13 @@ async function sendMessage() {
 }
 
 async function callAI(messages) {
+  const API_KEY = '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'; // Replace with your key from console.anthropic.com
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json',
-        'x-api-key': 'YOUR_API_KEY_HERE',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
         'anthropic-version': '2023-06-01',
         'anthropic-dangerous-direct-browser-access': 'true'
       },
@@ -760,9 +762,14 @@ async function callAI(messages) {
       })
     });
     const data = await res.json();
-    return data.content?.find(b => b.type === 'text')?.text || 'The connection is quiet right now. Please try again.';
+    if (!res.ok) {
+      console.error('API error:', data);
+      return 'API Error ' + res.status + ': ' + (data.error?.message || JSON.stringify(data));
+    }
+    return data.content?.find(b => b.type === 'text')?.text || 'No response received.';
   } catch(e) {
-    return 'Something went wrong. Please try again.';
+    console.error('Fetch error:', e);
+    return 'Connection error: ' + e.message;
   }
 }
 

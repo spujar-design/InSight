@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>InSight — About</title>
+<link rel="stylesheet" href="style.css" />
+<style>
+.about-hero {
+  padding-top: 140px;
+  padding-bottom: 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-left: 80px;
+  padding-right: 80px;
+}
+.about-hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(48px, 6vw, 80px);
+  font-weight: 300;
+  line-height: 1.05;
+  margin-bottom: 24px;
+}
+.about-hero h1 em { font-style: italic; color: var(--gold2); }
+.about-hero p { font-size: 17px; color: var(--text2); line-height: 1.75; margin-bottom: 16px; }
+
+/* Decorative chart */
+.chart-deco {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+}
+.chart-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chart-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--border2);
+}
+.ring-a { inset: 0; }
+.ring-b { inset: 15%; }
+.ring-c { inset: 30%; }
+.ring-d { inset: 45%; border-color: rgba(201,168,76,0.25); }
+.chart-cross { position: absolute; inset: 0; }
+.chart-cross::before, .chart-cross::after {
+  content: '';
+  position: absolute;
+  background: var(--border2);
+}
+.chart-cross::before { width: 1px; height: 100%; left: 50%; }
+.chart-cross::after { height: 1px; width: 100%; top: 50%; }
+.chart-center {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 48px;
+  color: var(--gold2);
+  opacity: 0.7;
+  position: relative;
+  z-index: 1;
+}
+.chart-sign {
+  position: absolute;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  color: rgba(201,168,76,0.4);
+}
+
+/* Mission */
+.mission {
+  background: var(--bg2);
+  border-top: 1px solid var(--border2);
+  border-bottom: 1px solid var(--border2);
+}
+.mission-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 80px;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 80px;
+  align-items: start;
+}
+.mission-label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--gold); text-transform: uppercase; margin-bottom: 16px; }
+.mission-title { font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 300; line-height: 1.15; }
+.mission-body { font-size: 17px; color: var(--text2); line-height: 1.8; }
+.mission-body p { margin-bottom: 20px; }
+.mission-body p:last-child { margin-bottom: 0; }
+
+/* Values */
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border2);
+  max-width: 1400px;
+  margin: 0 auto 0;
+}
+.value-card {
+  background: var(--bg);
+  padding: 48px 40px;
+}
+.value-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--text3);
+  margin-bottom: 20px;
+  display: block;
+}
+.value-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 300;
+  margin-bottom: 12px;
+}
+.value-card p { font-size: 14px; color: var(--text2); line-height: 1.65; }
+
+/* Team */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 80px;
+}
+.team-card { padding: 40px; border: 1px solid var(--border2); }
+.team-avatar {
+  width: 60px; height: 60px;
+  border: 1px solid var(--border);
+  background: var(--gold-dim);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  color: var(--gold2);
+  margin-bottom: 20px;
+}
+.team-name { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; margin-bottom: 4px; }
+.team-role { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--gold); text-transform: uppercase; margin-bottom: 14px; }
+.team-bio { font-size: 14px; color: var(--text2); line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="cursor"></div>
+<div class="cursor-ring"></div>
+<canvas id="starfield"></canvas>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-mark"></div>
+    InSight
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="reading.html">Get Reading</a></li>
+    <li><a href="horoscope.html">Horoscope</a></li>
+    <li><a href="compatibility.html">Compatibility</a></li>
+    <li><a href="blog.html">Journal</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <a href="reading.html" class="nav-cta">Begin Reading</a>
+</nav>
+
+<main class="page">
+
+  <div class="about-hero">
+    <div class="fade-up">
+      <span class="eyebrow">Our Story</span>
+      <h1>Born from<br><em>time-tested</em><br>and modern</h1>
+      <p>InSight was built on a simple belief: your path holds patterns that mirror the patterns within us. Ancient wisdom, meet contemporary intelligence.</p>
+      <p>We fuse thousands of years of astrological, number-based, and insight cards tradition with the interpretive power of AI — giving you readings that are both deeply rooted and precisely personal.</p>
+      <a href="reading.html" class="btn-primary" style="margin-top:12px;">Experience It ↗</a>
+    </div>
+    <div class="chart-deco fade-up delay-2">
+      <div class="chart-inner">
+        <div class="chart-ring ring-a"></div>
+        <div class="chart-ring ring-b"></div>
+        <div class="chart-ring ring-c"></div>
+        <div class="chart-ring ring-d"></div>
+        <div class="chart-cross"></div>
+        <div class="chart-sign" style="top:8%; left:50%; transform:translateX(-50%)">♈</div>
+        <div class="chart-sign" style="bottom:8%; left:50%; transform:translateX(-50%)">♎</div>
+        <div class="chart-sign" style="left:8%; top:50%; transform:translateY(-50%)">♋</div>
+        <div class="chart-sign" style="right:8%; top:50%; transform:translateY(-50%)">♑</div>
+        <div class="chart-center">✦</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mission">
+    <div class="mission-inner fade-up">
+      <div>
+        <div class="mission-label">Our Mission</div>
+        <h2 class="mission-title">To make self-knowledge radically accessible</h2>
+      </div>
+      <div class="mission-body">
+        <p>For millennia, deep astrological readings required years of study or expensive consultations with skilled astrologers. The knowledge existed, but access was limited. We wanted to change that.</p>
+        <p>InSight makes it possible for anyone — regardless of their knowledge of astrology — to receive a reading with the depth and precision that was once only available to a few. Your birth data is your key. Our AI is your guide.</p>
+        <p>We believe self-knowledge is the foundation of a well-lived life. And the stars, if you know how to read them, are one of the most profound mirrors of the self that exists.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="values-grid fade-up">
+    <div class="value-card">
+      <span class="value-num">01</span>
+      <h3>Precision</h3>
+      <p>We take birth data seriously. Time and place of birth are not optional — they unlock the full depth of your chart.</p>
+    </div>
+    <div class="value-card">
+      <span class="value-num">02</span>
+      <h3>Depth</h3>
+      <p>We refuse to give generic sun-sign horoscopes. Every reading engages the full complexity of your personal blueprint.</p>
+    </div>
+    <div class="value-card">
+      <span class="value-num">03</span>
+      <h3>Integrity</h3>
+      <p>We combine proven frameworks with modern understanding honestly — never making claims we cannot substantiate.</p>
+    </div>
+    <div class="value-card">
+      <span class="value-num">04</span>
+      <h3>Beauty</h3>
+      <p>Your future is beautiful. We believe an interface that helps you explore it should match that grandeur.</p>
+    </div>
+  </div>
+
+  <div class="team-grid fade-up">
+    <div class="team-card">
+      <div class="team-avatar">✦</div>
+      <div class="team-name">Celeste Morin</div>
+      <div class="team-role">Founder & Chief Guide</div>
+      <p class="team-bio">A professional astrologer of 18 years with a background in Jungian psychology. Celeste built InSight to bring the depth of traditional chart work to anyone with a birth certificate.</p>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">◎</div>
+      <div class="team-name">Rajan Mehta</div>
+      <div class="team-role">AI Research Lead</div>
+      <p class="team-bio">Former NLP researcher obsessed with the intersection of symbolic systems and machine intelligence. Rajan built the interpretation engine that powers every InSight reading.</p>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">☽</div>
+      <div class="team-name">Isla Voss</div>
+      <div class="team-role">Head of Insight Cards & Number Patterns</div>
+      <p class="team-bio">A third-generation insight cards reader and numerologist. Isla trained the models on decades of curated reading notes to ensure symbolic depth in every card interpretation.</p>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-logo">InSight</div>
+  <ul class="footer-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="reading.html">Reading</a></li>
+    <li><a href="horoscope.html">Horoscope</a></li>
+    <li><a href="compatibility.html">Compatibility</a></li>
+    <li><a href="blog.html">Journal</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <p class="footer-copy">© 2025 InSight. All rights reserved.</p>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>

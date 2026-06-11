@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>InSight — Daily Horoscope</title>
+<link rel="stylesheet" href="style.css" />
+<style>
+.horo-hero {
+  padding-top: 140px;
+  padding-bottom: 60px;
+  text-align: center;
+}
+.horo-hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(48px, 6vw, 80px);
+  font-weight: 300;
+  margin-bottom: 16px;
+}
+.horo-hero p { font-size: 16px; color: var(--text2); }
+.today-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  margin-bottom: 12px;
+  display: block;
+}
+
+/* Zodiac wheel */
+.zodiac-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1px;
+  background: var(--border2);
+  margin: 0 80px 60px;
+}
+.zodiac-btn {
+  background: var(--bg);
+  border: none;
+  padding: 28px 16px;
+  text-align: center;
+  cursor: none;
+  transition: background 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.zodiac-btn:hover { background: rgba(201,168,76,0.05); }
+.zodiac-btn.active { background: var(--gold-dim); border-bottom: 2px solid var(--gold); }
+.zodiac-symbol {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  color: var(--gold2);
+  line-height: 1;
+}
+.zodiac-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  text-transform: uppercase;
+}
+.zodiac-dates { font-size: 11px; color: var(--text3); }
+.zodiac-btn.active .zodiac-name { color: var(--gold); }
+
+/* Result area */
+.horo-result {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 80px 100px;
+}
+.horo-card {
+  border: 1px solid var(--border);
+  background: rgba(13,11,26,0.8);
+  padding: 60px;
+}
+.horo-card-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--border2);
+}
+.horo-big-symbol {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 80px;
+  color: var(--gold2);
+  line-height: 1;
+  opacity: 0.8;
+}
+.horo-sign-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 40px;
+  font-weight: 300;
+  margin-bottom: 6px;
+}
+.horo-sign-dates {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: 0.1em;
+}
+
+.horo-meters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+.meter { padding: 20px; border: 1px solid var(--border2); text-align: center; }
+.meter-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; margin-bottom: 10px; }
+.meter-bar { height: 2px; background: var(--border2); margin-bottom: 8px; }
+.meter-fill { height: 100%; background: var(--gold); transition: width 1s ease; }
+.meter-val { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--gold2); }
+
+.horo-sections { display: grid; gap: 28px; }
+.horo-section-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+.horo-section-text { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 300; line-height: 1.75; color: var(--text2); }
+
+.horo-loading { text-align: center; padding: 80px; display: none; }
+.horo-loading.active { display: block; }
+
+.lucky-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border2);
+}
+.lucky-item { text-align: center; }
+.lucky-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+.lucky-val { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--gold2); }
+</style>
+</head>
+<body>
+<div class="cursor"></div>
+<div class="cursor-ring"></div>
+<canvas id="starfield"></canvas>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-mark"></div>
+    InSight
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="reading.html">Get Reading</a></li>
+    <li><a href="horoscope.html">Horoscope</a></li>
+    <li><a href="compatibility.html">Compatibility</a></li>
+    <li><a href="blog.html">Journal</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <a href="reading.html" class="nav-cta">Begin Reading</a>
+</nav>
+
+<main class="page">
+  <div class="horo-hero fade-up">
+    <span class="today-date" id="todayDate"></span>
+    <span class="eyebrow">Daily Future Guidance</span>
+    <h1>Your Horoscope</h1>
+    <p>Select your sign to receive today's personal message</p>
+  </div>
+
+  <div class="zodiac-grid">
+    <button class="zodiac-btn active" data-sign="Aries" data-symbol="♈" data-dates="Mar 21 – Apr 19" onclick="selectSign(this)">
+      <span class="zodiac-symbol">♈</span>
+      <span class="zodiac-name">Aries</span>
+      <span class="zodiac-dates">Mar 21 – Apr 19</span>
+    </button>
+    <button class="zodiac-btn" data-sign="Taurus" data-symbol="♉" data-dates="Apr 20 – May 20" onclick="selectSign(this)">
+      <span class="zodiac-symbol">♉</span>
+      <span class="zodiac-name">Taurus</span>
+      <span class="zodiac-dates">Apr 20 – May 20</span>
+    </button>
+    <button class="zodiac-btn" data-sign="Gemini" data-symbol="♊" data-dates="May 21 – Jun 20" onclick="selectSign(this)">
+      <span class="zodiac-symbol">♊</span>
+      <span class="zodiac-name">Gemini</span>
+      <span class="zodiac-dates">May 21 – Jun 20</span>
+    </button>
+    <button class="zodiac-btn" data-sign="Cancer" data-symbol="♋" data-dates="Jun 21 – Jul 22" onclick="selectSign(this)">
+      <span class="zodiac-symbol">♋</span>
+      <span class="zodiac-name">Cancer</span>
+      <span class="zodiac-dates">Jun 21 – Jul 22</span>
+    </button>
+    <button class="zodiac-btn" data-sign="Leo" data-symbol="♌" data-dates="Jul 23 – Aug 22" onclick="selectSign(this)">
+      <span class="zodiac-symbol">♌</span>
+      <span class="zodiac-name">Leo</span>
+      <span class="zodiac-dates">Jul 23 – Aug 22</span>
+    </button>
+    <button class="zodiac-btn" data-sign="Virgo" data-symbol="♍" data-dates="Aug 23 – Sep 22" onclick="selectSign(this)">
+      <span class="zodiac-symbol">♍</span>
+      <span class="zodiac-name">Virgo</span>
+      <span class="zodiac-dates">Aug 23 – Sep 22</span>
+    </button>
+    <button class="zodiac-btn" data-sign="Libra" data-symbol="♎" data-dates="Sep 23 – Oct 22" onclick="selectSign(this)">
+      <span class="zodiac-symbol">♎</span>
+      <span class="zodiac-name">Libra</span>
+      <span class="zodiac-dates">Sep 23 – Oct 22</span>
+    </button>
+    <button class="zodiac-btn" data-sign="Scorpio" data-symbol="♏" data-dates="Oct 23 – Nov 21" onclick="selectSign(this)">
+      <span class="zodiac-symbol">♏</span>
+      <span class="zodiac-name">Scorpio</span>
+      <span class="zodiac-dates">Oct 23 – Nov 21</span>
+    </button>
+    <button class="zodiac-btn" data-sign="Sagittarius" data-symbol="♐" data-dates="Nov 22 – Dec 21" onclick="selectSign(this)">
+      <span class="zodiac-symbol">♐</span>
+      <span class="zodiac-name">Sagittarius</span>
+      <span class="zodiac-dates">Nov 22 – Dec 21</span>
+    </button>
+    <button class="zodiac-btn" data-sign="Capricorn" data-symbol="♑" data-dates="Dec 22 – Jan 19" onclick="selectSign(this)">
+      <span class="zodiac-symbol">♑</span>
+      <span class="zodiac-name">Capricorn</span>
+      <span class="zodiac-dates">Dec 22 – Jan 19</span>
+    </button>
+    <button class="zodiac-btn" data-sign="Aquarius" data-symbol="♒" data-dates="Jan 20 – Feb 18" onclick="selectSign(this)">
+      <span class="zodiac-symbol">♒</span>
+      <span class="zodiac-name">Aquarius</span>
+      <span class="zodiac-dates">Jan 20 – Feb 18</span>
+    </button>
+    <button class="zodiac-btn" data-sign="Pisces" data-symbol="♓" data-dates="Feb 19 – Mar 20" onclick="selectSign(this)">
+      <span class="zodiac-symbol">♓</span>
+      <span class="zodiac-name">Pisces</span>
+      <span class="zodiac-dates">Feb 19 – Mar 20</span>
+    </button>
+  </div>
+
+  <div class="horo-result">
+    <div class="horo-loading" id="horoLoading">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:60px;color:var(--gold);opacity:0.4;animation:pulse2 2s ease-in-out infinite;">✦</div>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;color:var(--text2);margin-top:20px;">Reading the stars…</p>
+    </div>
+    <div class="horo-card" id="horoCard">
+      <div class="horo-card-header">
+        <div class="horo-big-symbol" id="bigSymbol">♈</div>
+        <div>
+          <div class="horo-sign-name" id="signName">Aries</div>
+          <div class="horo-sign-dates" id="signDates">Mar 21 – Apr 19</div>
+        </div>
+      </div>
+      <div class="horo-meters">
+        <div class="meter">
+          <div class="meter-label">Love</div>
+          <div class="meter-bar"><div class="meter-fill" id="loveMeter" style="width:0%"></div></div>
+          <div class="meter-val" id="loveVal">—</div>
+        </div>
+        <div class="meter">
+          <div class="meter-label">Career</div>
+          <div class="meter-bar"><div class="meter-fill" id="careerMeter" style="width:0%"></div></div>
+          <div class="meter-val" id="careerVal">—</div>
+        </div>
+        <div class="meter">
+          <div class="meter-label">Energy</div>
+          <div class="meter-bar"><div class="meter-fill" id="energyMeter" style="width:0%"></div></div>
+          <div class="meter-val" id="energyVal">—</div>
+        </div>
+      </div>
+      <div class="horo-sections">
+        <div>
+          <div class="horo-section-label">Today's Future Message</div>
+          <p class="horo-section-text" id="mainText">Select your sign above to receive today's reading.</p>
+        </div>
+        <div>
+          <div class="horo-section-label">Love & Relationships</div>
+          <p class="horo-section-text" id="loveText"></p>
+        </div>
+        <div>
+          <div class="horo-section-label">Career & Purpose</div>
+          <p class="horo-section-text" id="careerText"></p>
+        </div>
+      </div>
+      <div class="lucky-row">
+        <div class="lucky-item">
+          <div class="lucky-label">Key Number</div>
+          <div class="lucky-val" id="luckyNum">—</div>
+        </div>
+        <div class="lucky-item">
+          <div class="lucky-label">Power Colour</div>
+          <div class="lucky-val" id="luckyColor">—</div>
+        </div>
+        <div class="lucky-item">
+          <div class="lucky-label">Focus Stone</div>
+          <div class="lucky-val" id="luckyCrystal">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-logo">InSight</div>
+  <ul class="footer-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="reading.html">Reading</a></li>
+    <li><a href="horoscope.html">Horoscope</a></li>
+    <li><a href="compatibility.html">Compatibility</a></li>
+    <li><a href="blog.html">Journal</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <p class="footer-copy">© 2025 InSight. All rights reserved.</p>
+</footer>
+
+<script src="main.js"></script>
+<script>
+document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+let currentSign = { sign: 'Aries', symbol: '♈', dates: 'Mar 21 – Apr 19' };
+
+function selectSign(btn) {
+  document.querySelectorAll('.zodiac-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentSign = { sign: btn.dataset.sign, symbol: btn.dataset.symbol, dates: btn.dataset.dates };
+  fetchHoroscope();
+}
+
+async function fetchHoroscope() {
+  const loading = document.getElementById('horoLoading');
+  const card = document.getElementById('horoCard');
+  loading.classList.add('active');
+  card.style.opacity = '0.3';
+
+  document.getElementById('bigSymbol').textContent = currentSign.symbol;
+  document.getElementById('signName').textContent = currentSign.sign;
+  document.getElementById('signDates').textContent = currentSign.dates;
+
+  const today = new Date().toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+
+  const prompt = `You are InSight, a sophisticated future guide. Write a daily horoscope for ${currentSign.sign} for ${today}.
+
+Respond ONLY with valid JSON (no markdown, no backticks):
+{
+  "main": "2-3 sentences. Poetic, personal, specific to today's pattern energy.",
+  "love": "2 sentences about love and relationships for ${currentSign.sign} today.",
+  "career": "2 sentences about career and purpose for ${currentSign.sign} today.",
+  "loveScore": 75,
+  "careerScore": 80,
+  "energyScore": 65,
+  "luckyNumber": "7",
+  "luckyColor": "Amber",
+  "luckyCrystal": "Citrine"
+}`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await response.json();
+    const raw = data.content?.find(b => b.type === 'text')?.text || '{}';
+    const r = JSON.parse(raw.replace(/```json|```/g, '').trim());
+
+    document.getElementById('mainText').textContent = r.main || '';
+    document.getElementById('loveText').textContent = r.love || '';
+    document.getElementById('careerText').textContent = r.career || '';
+    document.getElementById('luckyNum').textContent = r.luckyNumber || '—';
+    document.getElementById('luckyColor').textContent = r.luckyColor || '—';
+    document.getElementById('luckyCrystal').textContent = r.luckyCrystal || '—';
+
+    setTimeout(() => {
+      document.getElementById('loveMeter').style.width = (r.loveScore || 70) + '%';
+      document.getElementById('careerMeter').style.width = (r.careerScore || 70) + '%';
+      document.getElementById('energyMeter').style.width = (r.energyScore || 70) + '%';
+      document.getElementById('loveVal').textContent = (r.loveScore || 70) + '%';
+      document.getElementById('careerVal').textContent = (r.careerScore || 70) + '%';
+      document.getElementById('energyVal').textContent = (r.energyScore || 70) + '%';
+    }, 300);
+
+  } catch(e) {
+    document.getElementById('mainText').textContent = 'The stars are quiet right now. Please try again.';
+  }
+
+  loading.classList.remove('active');
+  card.style.opacity = '1';
+}
+
+fetchHoroscope();
+</script>
+</body>
+</html>

@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>InSight — Know Your Future</title>
+<link rel="stylesheet" href="style.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+
+/* ─── NEBULA HERO ─────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Layered nebula glows */
+.nebula {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.nebula::before {
+  content: '';
+  position: absolute;
+  width: 900px; height: 900px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -55%);
+  background: radial-gradient(ellipse at center,
+    rgba(120, 60, 200, 0.18) 0%,
+    rgba(201, 168, 76, 0.10) 35%,
+    rgba(0, 212, 180, 0.05) 60%,
+    transparent 75%);
+  animation: nebulaPulse 8s ease-in-out infinite;
+}
+.nebula::after {
+  content: '';
+  position: absolute;
+  width: 600px; height: 300px;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center,
+    rgba(201, 168, 76, 0.12) 0%,
+    transparent 70%);
+  animation: nebulaPulse 6s ease-in-out 2s infinite;
+}
+@keyframes nebulaPulse {
+  0%, 100% { opacity: 0.6; transform: translate(-50%, -55%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -55%) scale(1.05); }
+}
+
+/* Orbiting ring */
+.orbit-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 700px; height: 700px;
+  margin: -350px 0 0 -350px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 168, 76, 0.10);
+  animation: orbitSpin 60s linear infinite;
+  pointer-events: none;
+}
+.orbit-ring::before {
+  content: '';
+  position: absolute;
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  top: -4px; left: 50%;
+  margin-left: -4px;
+  box-shadow: 0 0 12px var(--gold), 0 0 24px rgba(201,168,76,0.4);
+}
+.orbit-ring-2 {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 520px; height: 520px;
+  margin: -260px 0 0 -260px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 212, 180, 0.07);
+  animation: orbitSpin 40s linear infinite reverse;
+  pointer-events: none;
+}
+.orbit-ring-2::before {
+  content: '';
+  position: absolute;
+  width: 5px; height: 5px;
+  background: var(--teal);
+  border-radius: 50%;
+  bottom: -3px; left: 50%;
+  margin-left: -2px;
+  box-shadow: 0 0 10px var(--teal);
+}
+@keyframes orbitSpin { to { transform: rotate(360deg); } }
+
+/* Welcome badge */
+.welcome-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(201, 168, 76, 0.08);
+  border: 1px solid rgba(201, 168, 76, 0.25);
+  border-radius: 100px;
+  padding: 8px 20px 8px 10px;
+  margin-bottom: 36px;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.1s forwards;
+}
+.badge-dot {
+  width: 28px; height: 28px;
+  background: rgba(201, 168, 76, 0.15);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  animation: badgePulse 2s ease-in-out infinite;
+}
+@keyframes badgePulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(201,168,76,0); }
+}
+.badge-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--gold2);
+  text-transform: uppercase;
+}
+
+/* Hero headline */
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(60px, 9vw, 120px);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.25s forwards;
+}
+.hero-title .line2 {
+  display: block;
+  font-style: italic;
+  color: var(--gold2);
+  text-shadow: 0 0 80px rgba(201,168,76,0.3);
+}
+
+.hero-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(18px, 2.5vw, 26px);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text2);
+  margin-bottom: 32px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.4s forwards;
+}
+
+.hero-sub {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  color: rgba(237,232,255,0.5);
+  max-width: 520px;
+  line-height: 1.7;
+  margin: 0 auto 52px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.5s forwards;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.65s forwards;
+}
+
+.btn-glow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #000;
+  background: linear-gradient(135deg, var(--gold2) 0%, var(--gold) 100%);
+  border: none;
+  padding: 16px 36px;
+  cursor: none;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s;
+  box-shadow: 0 0 40px rgba(201,168,76,0.25), 0 4px 20px rgba(0,0,0,0.4);
+}
+.btn-glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 60%);
+}
+.btn-glow:hover { transform: translateY(-3px); box-shadow: 0 0 60px rgba(201,168,76,0.4), 0 8px 30px rgba(0,0,0,0.4); }
+
+/* Floating zodiac signs around hero */
+.floating-signs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.fsign {
+  position: absolute;
+  font-family: 'Cormorant Garamond', serif;
+  color: rgba(201, 168, 76, 0.15);
+  animation: floatSign linear infinite;
+  user-select: none;
+}
+@keyframes floatSign {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0.1; }
+  25% { opacity: 0.25; }
+  75% { opacity: 0.1; }
+  100% { transform: translateY(-40px) rotate(10deg); opacity: 0; }
+}
+
+/* Scroll hint */
+.scroll-hint {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  animation: fadeUp 1s 1.2s forwards;
+}
+.scroll-hint span {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--text3);
+  text-transform: uppercase;
+}
+.scroll-mouse {
+  width: 22px; height: 34px;
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 11px;
+  display: flex;
+  justify-content: center;
+  padding-top: 6px;
+}
+.scroll-wheel {
+  width: 3px; height: 6px;
+  background: var(--gold);
+  border-radius: 2px;
+  animation: scrollWheel 2s ease-in-out infinite;
+}
+@keyframes scrollWheel {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(8px); opacity: 0; }
+}
+
+/* ─── WELCOME STRIP ─────────────────────────────────── */
+.welcome-strip {
+  padding: 70px 80px;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 2px 1fr;
+  gap: 60px;
+  align-items: center;
+}
+.welcome-strip-divider {
+  background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+  height: 100%;
+  min-height: 120px;
+}
+.welcome-left h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 44px;
+  font-weight: 300;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+.welcome-left h2 em { font-style: italic; color: var(--gold2); }
+.welcome-left p { font-size: 16px; color: var(--text2); line-height: 1.8; }
+.welcome-right {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.welcome-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border: 1px solid var(--border2);
+  background: rgba(255,255,255,0.02);
+  transition: border-color 0.3s, background 0.3s;
+  text-decoration: none;
+}
+.welcome-pill:hover { border-color: rgba(201,168,76,0.35); background: rgba(201,168,76,0.04); }
+.pill-icon { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--gold2); opacity: 0.8; width: 32px; text-align: center; }
+.pill-label { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 0.04em; color: var(--text); }
+.pill-sub { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); letter-spacing: 0.06em; }
+
+/* ─── STATS ─────────────────────────────────── */
+.stats-bar {
+  border-top: 1px solid var(--border2);
+  border-bottom: 1px solid var(--border2);
+  background: rgba(13,11,26,0.6);
+  backdrop-filter: blur(10px);
+  position: relative; z-index: 1;
+}
+.stats-inner {
+  max-width: 1400px; margin: 0 auto; padding: 0 80px;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+}
+.stat-item {
+  padding: 40px 0; text-align: center;
+  border-right: 1px solid var(--border2); position: relative;
+}
+.stat-item:last-child { border-right: none; }
+.stat-num {
+  font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 300;
+  color: var(--gold2); display: block; line-height: 1; margin-bottom: 6px;
+  text-shadow: 0 0 30px rgba(201,168,76,0.2);
+}
+.stat-label {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.15em; color: var(--text3); text-transform: uppercase;
+}
+
+/* ─── ZODIAC WHEEL SECTION ─────────────────────────────────── */
+.signs-section {
+  padding: 100px 80px;
+  max-width: 1400px; margin: 0 auto;
+  text-align: center;
+}
+.signs-section h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 48px; font-weight: 300; margin-bottom: 12px;
+}
+.signs-section p { font-size: 16px; color: var(--text2); margin-bottom: 60px; }
+.signs-wheel {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1px;
+  background: var(--border2);
+}
+.sign-tile {
+  background: var(--bg);
+  padding: 32px 20px;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.25s, transform 0.25s;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.sign-tile::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 70%);
+  opacity: 0; transition: opacity 0.3s;
+}
+.sign-tile:hover { background: rgba(201,168,76,0.04); transform: translateY(-2px); }
+.sign-tile:hover::before { opacity: 1; }
+.sign-glyph {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px; color: var(--gold2); line-height: 1;
+  transition: text-shadow 0.3s;
+}
+.sign-tile:hover .sign-glyph { text-shadow: 0 0 20px rgba(201,168,76,0.5); }
+.sign-name { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; }
+.sign-dates { font-size: 11px; color: var(--text3); }
+
+/* ─── FEATURES ─────────────────────────────────── */
+.features-section { background: var(--bg2); }
+.features-inner {
+  max-width: 1400px; margin: 0 auto; padding: 100px 80px;
+}
+.features-header {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 60px; margin-bottom: 60px; align-items: end;
+}
+.features-header h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 4vw, 52px); font-weight: 300; line-height: 1.1;
+}
+.features-header p { font-size: 16px; color: var(--text2); line-height: 1.8; }
+.features-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border2);
+}
+.feature-card {
+  background: var(--bg2); padding: 48px 40px;
+  transition: background 0.3s; position: relative; overflow: hidden;
+}
+.feature-card::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  transform: scaleX(0); transition: transform 0.5s;
+}
+.feature-card:hover { background: rgba(201,168,76,0.04); }
+.feature-card:hover::after { transform: scaleX(1); }
+.feature-icon {
+  font-family: 'Cormorant Garamond', serif; font-size: 44px;
+  color: var(--gold); margin-bottom: 24px; display: block; line-height: 1;
+}
+.feature-card h3 {
+  font-family: 'Rajdhani', sans-serif; font-size: 19px; font-weight: 600;
+  letter-spacing: 0.06em; margin-bottom: 12px; text-transform: uppercase;
+}
+.feature-card p { font-size: 15px; color: var(--text2); line-height: 1.7; }
+.feature-card .feature-arrow {
+  display: inline-block; margin-top: 20px;
+  font-family: 'DM Mono', monospace; font-size: 11px; color: var(--gold);
+  letter-spacing: 0.1em; text-decoration: none;
+  opacity: 0; transition: opacity 0.2s;
+}
+.feature-card:hover .feature-arrow { opacity: 1; }
+
+/* ─── HOW IT WORKS ─────────────────────────────────── */
+.how-section { position: relative; overflow: hidden; }
+.how-inner { max-width: 1400px; margin: 0 auto; padding: 100px 80px; }
+.how-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0; position: relative; margin-top: 70px;
+}
+.how-grid::before {
+  content: '';
+  position: absolute; top: 40px; left: 12.5%; right: 12.5%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.4), var(--gold), rgba(201,168,76,0.4), transparent);
+}
+.how-step { padding: 0 28px; text-align: center; }
+.step-num {
+  width: 80px; height: 80px; border: 1px solid rgba(201,168,76,0.3);
+  background: var(--bg); display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 32px;
+  font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 300; color: var(--gold2);
+  position: relative;
+  box-shadow: 0 0 30px rgba(201,168,76,0.08), inset 0 0 30px rgba(201,168,76,0.04);
+}
+.step-num::before {
+  content: ''; position: absolute; inset: 5px;
+  border: 1px solid rgba(201,168,76,0.1);
+}
+.how-step h3 {
+  font-size: 17px; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; margin-bottom: 10px;
+}
+.how-step p { font-size: 14px; color: var(--text2); line-height: 1.65; }
+
+/* ─── READING PREVIEW (new warm CTA) ─────────────────────────────────── */
+.preview-section {
+  padding: 0 80px 100px;
+  max-width: 1400px; margin: 0 auto;
+}
+.preview-card {
+  background: linear-gradient(135deg,
+    rgba(120,60,200,0.12) 0%,
+    rgba(201,168,76,0.08) 40%,
+    rgba(0,212,180,0.06) 100%);
+  border: 1px solid rgba(201,168,76,0.25);
+  padding: 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+.preview-card::before {
+  content: '✦';
+  position: absolute; right: -30px; top: 50%; transform: translateY(-50%);
+  font-family: 'Cormorant Garamond', serif; font-size: 400px;
+  color: rgba(201,168,76,0.04); line-height: 1; pointer-events: none;
+}
+.preview-left h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 4vw, 54px); font-weight: 300; line-height: 1.1;
+  margin-bottom: 20px;
+}
+.preview-left h2 em { font-style: italic; color: var(--gold2); }
+.preview-left p { font-size: 16px; color: var(--text2); line-height: 1.8; margin-bottom: 36px; }
+.preview-checklist { list-style: none; margin-bottom: 36px; display: flex; flex-direction: column; gap: 12px; }
+.preview-checklist li {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 15px; color: var(--text2);
+}
+.preview-checklist li::before {
+  content: '✦'; color: var(--gold); font-family: 'Cormorant Garamond', serif;
+  font-size: 14px; flex-shrink: 0;
+}
+
+.preview-form {
+  background: rgba(3,2,10,0.6);
+  border: 1px solid var(--border);
+  padding: 40px;
+  backdrop-filter: blur(10px);
+}
+.preview-form h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px; font-weight: 300; margin-bottom: 28px;
+  text-align: center; color: var(--gold2);
+}
+.pf-group { margin-bottom: 14px; }
+.pf-group label {
+  display: block; font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.12em; color: var(--text3); text-transform: uppercase; margin-bottom: 6px;
+}
+.pf-group input, .pf-group select {
+  width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 15px;
+  padding: 11px 14px; outline: none; transition: border-color 0.2s;
+}
+.pf-group input:focus, .pf-group select:focus { border-color: rgba(201,168,76,0.5); }
+.pf-group select option { background: #0d0b1a; }
+.pf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pf-submit {
+  width: 100%; margin-top: 8px;
+  background: linear-gradient(135deg, var(--gold2), var(--gold));
+  border: none; color: #000;
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 16px; cursor: none;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(201,168,76,0.2);
+}
+.pf-submit:hover { box-shadow: 0 4px 30px rgba(201,168,76,0.4); transform: translateY(-1px); }
+
+/* ─── TESTIMONIALS ─────────────────────────────────── */
+.testi-section { background: var(--bg2); }
+.testi-inner { max-width: 1400px; margin: 0 auto; padding: 100px 80px; }
+.testi-header { text-align: center; margin-bottom: 60px; }
+.testi-header h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 48px; font-weight: 300; margin-bottom: 12px;
+}
+.testi-header p { font-size: 16px; color: var(--text2); }
+.testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border2); }
+.testimonial {
+  background: var(--bg2); padding: 44px; position: relative;
+  transition: background 0.3s;
+}
+.testimonial:hover { background: rgba(201,168,76,0.03); }
+.testimonial::before {
+  content: '"'; font-family: 'Cormorant Garamond', serif; font-size: 100px;
+  color: var(--gold); opacity: 0.12; position: absolute;
+  top: 10px; left: 28px; line-height: 1;
+}
+.testimonial-stars { color: var(--gold); font-size: 14px; letter-spacing: 2px; margin-bottom: 16px; }
+.testimonial-text {
+  font-family: 'Cormorant Garamond', serif; font-size: 19px; font-style: italic;
+  font-weight: 300; line-height: 1.75; color: var(--text); margin-bottom: 28px; padding-top: 24px;
+}
+.testimonial-author { display: flex; align-items: center; gap: 14px; }
+.author-avatar {
+  width: 40px; height: 40px;
+  background: radial-gradient(circle, rgba(201,168,76,0.2), rgba(201,168,76,0.05));
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace; font-size: 12px; color: var(--gold2);
+}
+.author-name { font-size: 16px; font-weight: 600; }
+.author-info { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); letter-spacing: 0.08em; }
+
+/* ─── FINAL CTA ─────────────────────────────────── */
+.final-cta {
+  padding: 120px 80px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.final-cta::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center,
+    rgba(120,60,200,0.1) 0%,
+    rgba(201,168,76,0.06) 40%,
+    transparent 70%);
+}
+.final-cta h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(44px, 6vw, 80px); font-weight: 300; line-height: 1.1;
+  margin-bottom: 20px; position: relative;
+}
+.final-cta h2 em { font-style: italic; color: var(--gold2); }
+.final-cta p { font-size: 18px; color: var(--text2); margin-bottom: 48px; position: relative; }
+.final-cta-btns { display: flex; justify-content: center; gap: 16px; position: relative; }
+
+@media (max-width: 900px) {
+  .hero-title { font-size: clamp(48px, 12vw, 80px); }
+  .welcome-strip { grid-template-columns: 1fr; padding: 60px 24px; }
+  .welcome-strip-divider { display: none; }
+  .signs-wheel { grid-template-columns: repeat(4, 1fr); }
+  .features-header { grid-template-columns: 1fr; }
+  .features-grid { grid-template-columns: 1fr; }
+  .how-grid { grid-template-columns: 1fr 1fr; }
+  .how-grid::before { display: none; }
+  .preview-card { grid-template-columns: 1fr; gap: 40px; padding: 40px 24px; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .signs-section, .features-inner, .how-inner, .preview-section, .testi-inner { padding-left: 24px; padding-right: 24px; }
+}
+</style>
+</head>
+<style>
+/* ── DISCLAIMER OVERLAY ── */
+.disclaimer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(3,2,10,0.97);
+  backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.5s forwards;
+}
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+.disclaimer-overlay.hidden {
+  animation: fadeOut 0.6s forwards;
+  pointer-events: none;
+}
+@keyframes fadeOut { to { opacity:0; visibility:hidden; } }
+
+.disclaimer-box {
+  max-width: 620px;
+  width: 100%;
+  background: rgba(13,11,26,0.95);
+  border: 1px solid rgba(201,168,76,0.3);
+  padding: 52px 48px;
+  text-align: center;
+  position: relative;
+  animation: slideUp 0.6s 0.1s both;
+}
+@keyframes slideUp { from { transform:translateY(30px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+
+.disclaimer-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.disclaimer-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  color: var(--gold2);
+  margin-bottom: 8px;
+}
+.disclaimer-symbol {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 48px;
+  color: var(--gold);
+  opacity: 0.6;
+  display: block;
+  margin-bottom: 20px;
+  animation: pulse2 3s ease-in-out infinite;
+}
+.disclaimer-box h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 300;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+.disclaimer-tagline {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 28px;
+  display: block;
+}
+.disclaimer-text {
+  font-size: 15px;
+  color: var(--text2);
+  line-height: 1.8;
+  margin-bottom: 12px;
+}
+.disclaimer-text strong { color: var(--text); }
+.disclaimer-warning {
+  background: rgba(201,168,76,0.06);
+  border: 1px solid rgba(201,168,76,0.15);
+  padding: 18px 20px;
+  margin: 24px 0;
+  font-size: 13px;
+  color: rgba(237,232,255,0.6);
+  line-height: 1.7;
+  text-align: left;
+}
+.disclaimer-warning ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.disclaimer-warning ul li {
+  padding-left: 18px;
+  position: relative;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+.disclaimer-warning ul li:last-child { margin-bottom: 0; }
+.disclaimer-warning ul li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  opacity: 0.6;
+}
+.disclaimer-checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+  margin: 24px 0;
+  cursor: pointer;
+}
+.disclaimer-checkbox-row input[type="checkbox"] {
+  width: 18px; height: 18px;
+  accent-color: var(--gold);
+  flex-shrink: 0;
+  margin-top: 2px;
+  cursor: pointer;
+}
+.disclaimer-checkbox-row label {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.6;
+  cursor: pointer;
+}
+.disclaimer-checkbox-row label a {
+  color: var(--gold);
+  text-decoration: underline;
+}
+.disclaimer-accept {
+  width: 100%;
+  background: linear-gradient(135deg, var(--gold2), var(--gold));
+  border: none;
+  color: #000;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0.4;
+  box-shadow: 0 4px 20px rgba(201,168,76,0.15);
+}
+.disclaimer-accept.enabled {
+  opacity: 1;
+  box-shadow: 0 4px 24px rgba(201,168,76,0.3);
+}
+.disclaimer-accept.enabled:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(201,168,76,0.4);
+}
+.disclaimer-decline {
+  display: block;
+  margin-top: 14px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  text-transform: uppercase;
+  cursor: pointer;
+  background: none;
+  border: none;
+  width: 100%;
+  transition: color 0.2s;
+}
+.disclaimer-decline:hover { color: var(--text2); }
+</style>
+
+<body>
+
+<!-- ░░ DISCLAIMER OVERLAY ░░ -->
+<div class="disclaimer-overlay" id="disclaimerOverlay">
+  <div class="disclaimer-box">
+    <div class="disclaimer-logo">InSight</div>
+    <span class="disclaimer-symbol">✦</span>
+    <span class="disclaimer-tagline">Not guesswork. Real patterns. Your future, clearly.</span>
+    <h2>Before you begin</h2>
+    <p class="disclaimer-text">InSight is a <strong>self-reflection and personal insight tool</strong> powered by AI. It is not astrology, insight cards, or fortune telling — and it does not claim to predict your future.</p>
+    <div class="disclaimer-warning">
+      <ul>
+        <li>Readings are for entertainment & self-reflection only</li>
+        <li>Nothing here is medical, financial, or legal advice</li>
+        <li>Not all content will be accurate or applicable to you</li>
+        <li>Do not make major life decisions based on these readings</li>
+        <li>If you are in crisis, please speak to a qualified professional</li>
+      </ul>
+    </div>
+    <label class="disclaimer-checkbox-row">
+      <input type="checkbox" id="agreeCheck" onchange="toggleAccept()" />
+      <span>I have read and understood the above. I agree to the <a href="terms.html" target="_blank">Terms & Conditions</a> and understand that InSight is for personal reflection only.</span>
+    </label>
+    <button class="disclaimer-accept" id="acceptBtn" disabled onclick="acceptDisclaimer()">
+      I Understand — Enter InSight ✦
+    </button>
+    <button class="disclaimer-decline" onclick="window.location.href='https://google.com'">
+      No thanks, take me back
+    </button>
+  </div>
+</div>
+
+<div class="cursor"></div>
+<div class="cursor-ring"></div>
+<canvas id="starfield"></canvas>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-mark"></div>
+    InSight
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="reading.html">Get Reading</a></li>
+    <li><a href="horoscope.html">Horoscope</a></li>
+    <li><a href="compatibility.html">Compatibility</a></li>
+    <li><a href="blog.html">Journal</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <a href="reading.html" class="nav-cta">Begin Reading</a>
+</nav>
+
+<main class="page">
+
+  <!-- ░░ HERO ░░ -->
+  <section class="hero">
+    <div class="nebula"></div>
+    <div class="orbit-ring"></div>
+    <div class="orbit-ring-2"></div>
+    <div class="floating-signs" id="floatingSigns"></div>
+
+    <div class="welcome-badge">
+      <div class="badge-dot">✦</div>
+      <span class="badge-text">AI-Powered Personal Insights · Free to Begin</span>
+    </div>
+
+    <h1 class="hero-title">
+      Welcome to<br>
+      <span class="line2">starts here.</span>
+    </h1>
+
+    <p class="hero-tagline">AI-powered clarity. Real answers. Your future, decoded.</p>
+
+    <p class="hero-sub">InSight analyses your personal data to reveal patterns in your life — giving you clarity on who you are, where you are headed, and what decisions make sense for you.</p>
+
+    <div class="hero-actions">
+      <a href="reading.html" class="btn-glow">✦ &nbsp;Start My Free Reading</a>
+      <a href="horoscope.html" class="btn-ghost">Today's Horoscope ↗</a>
+    </div>
+
+    <div class="scroll-hint">
+      <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+      <span>Explore</span>
+    </div>
+  </section>
+
+  <!-- ░░ WELCOME STRIP ░░ -->
+  <div class="stats-bar" style="border-top:none;">
+    <div class="stats-inner">
+      <div class="stat-item fade-up">
+        <span class="stat-num">2.4M</span>
+        <span class="stat-label">Readings Delivered</span>
+      </div>
+      <div class="stat-item fade-up delay-1">
+        <span class="stat-num">98%</span>
+        <span class="stat-label">Accuracy Reported</span>
+      </div>
+      <div class="stat-item fade-up delay-2">
+        <span class="stat-num">150+</span>
+        <span class="stat-label">Countries Reached</span>
+      </div>
+      <div class="stat-item fade-up delay-3">
+        <span class="stat-num">4.9★</span>
+        <span class="stat-label">Average Rating</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ WELCOME INTRO ░░ -->
+  <div class="welcome-strip fade-up">
+    <div class="welcome-left">
+      <span class="eyebrow">You're in the right place</span>
+      <h2>This is not guesswork.
+It is <em>InSight.</em>
+      <p>InSight uses AI to find real patterns in your personal data — helping you understand your strengths, your blind spots, your relationships, and the road ahead. No vague promises. Just clear, honest perspective.</p>
+    </div>
+    <div class="welcome-strip-divider"></div>
+    <div class="welcome-right">
+      <a href="reading.html" class="welcome-pill">
+        <div class="pill-icon">✦</div>
+        <div>
+          <div class="pill-label">Full Guide Reading</div>
+          <div class="pill-sub">Birth chart + insight cards + numbers</div>
+        </div>
+      </a>
+      <a href="horoscope.html" class="welcome-pill">
+        <div class="pill-icon">☽</div>
+        <div>
+          <div class="pill-label">Daily Horoscope</div>
+          <div class="pill-sub">Fresh every morning</div>
+        </div>
+      </a>
+      <a href="compatibility.html" class="welcome-pill">
+        <div class="pill-icon">♡</div>
+        <div>
+          <div class="pill-label">Compatibility</div>
+          <div class="pill-sub">Compatibility Analysis between two charts</div>
+        </div>
+      </a>
+      <a href="blog.html" class="welcome-pill">
+        <div class="pill-icon">◎</div>
+        <div>
+          <div class="pill-label">Your Journal</div>
+          <div class="pill-sub">Guides & deep dives</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ░░ ZODIAC SIGNS ░░ -->
+  <div class="signs-section fade-up">
+    <span class="eyebrow">All Twelve Signs</span>
+    <h2>What's your personal identity?</h2>
+    <p>Select your sign for today.s forecast</p>
+    <div class="signs-wheel">
+      <a href="horoscope.html" class="sign-tile"><div class="sign-glyph">♈</div><div class="sign-name">Aries</div><div class="sign-dates">Mar 21–Apr 19</div></a>
+      <a href="horoscope.html" class="sign-tile"><div class="sign-glyph">♉</div><div class="sign-name">Taurus</div><div class="sign-dates">Apr 20–May 20</div></a>
+      <a href="horoscope.html" class="sign-tile"><div class="sign-glyph">♊</div><div class="sign-name">Gemini</div><div class="sign-dates">May 21–Jun 20</div></a>
+      <a href="horoscope.html" class="sign-tile"><div class="sign-glyph">♋</div><div class="sign-name">Cancer</div><div class="sign-dates">Jun 21–Jul 22</div></a>
+      <a href="horoscope.html" class="sign-tile"><div class="sign-glyph">♌</div><div class="sign-name">Leo</div><div class="sign-dates">Jul 23–Aug 22</div></a>
+      <a href="horoscope.html" class="sign-tile"><div class="sign-glyph">♍</div><div class="sign-name">Virgo</div><div class="sign-dates">Aug 23–Sep 22</div></a>
+      <a href="horoscope.html" class="sign-tile"><div class="sign-glyph">♎</div><div class="sign-name">Libra</div><div class="sign-dates">Sep 23–Oct 22</div></a>
+      <a href="horoscope.html" class="sign-tile"><div class="sign-glyph">♏</div><div class="sign-name">Scorpio</div><div class="sign-dates">Oct 23–Nov 21</div></a>
+      <a href="horoscope.html" class="sign-tile"><div class="sign-glyph">♐</div><div class="sign-name">Sagittarius</div><div class="sign-dates">Nov 22–Dec 21</div></a>
+      <a href="horoscope.html" class="sign-tile"><div class="sign-glyph">♑</div><div class="sign-name">Capricorn</div><div class="sign-dates">Dec 22–Jan 19</div></a>
+      <a href="horoscope.html" class="sign-tile"><div class="sign-glyph">♒</div><div class="sign-name">Aquarius</div><div class="sign-dates">Jan 20–Feb 18</div></a>
+      <a href="horoscope.html" class="sign-tile"><div class="sign-glyph">♓</div><div class="sign-name">Pisces</div><div class="sign-dates">Feb 19–Mar 20</div></a>
+    </div>
+  </div>
+
+  <!-- ░░ FEATURES ░░ -->
+  <div class="features-section">
+    <div class="features-inner fade-up">
+      <div class="features-header">
+        <h2>Everything the universe<br>offers — in one place</h2>
+        <p>From your birth profile to daily life patterns, from insight cards patterns to number patterns — InSight weaves it all into readings that feel uncannily personal.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <span class="feature-icon">◈</span>
+          <h3>Personality Deep Dive</h3>
+          <p>Understand who you really are — your strengths, blind spots, emotional patterns, and how you show up in the world. Built from your birth data.</p>
+          <a href="reading.html" class="feature-arrow">Get started →</a>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">◷</span>
+          <h3>Daily Forecast</h3>
+          <p>Every day brings new energy. Get a focused, forward-looking forecast based on your personal profile — not generic advice.</p>
+          <a href="horoscope.html" class="feature-arrow">See today's →</a>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">↗</span>
+          <h3>Life Direction</h3>
+          <p>Where are you headed? InSight identifies the patterns shaping your career, purpose, and biggest opportunities right now.</p>
+          <a href="reading.html" class="feature-arrow">Find your path →</a>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">◎</span>
+          <h3>Pattern Recognition</h3>
+          <p>Discover the recurring cycles in your life — financial, emotional, relational — and what they reveal about your next chapter.</p>
+          <a href="reading.html" class="feature-arrow">See your patterns →</a>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">♡</span>
+          <h3>Relationship Clarity</h3>
+          <p>Understand the real dynamics between you and someone else. What works, what clashes, and what the relationship is built to become.</p>
+          <a href="compatibility.html" class="feature-arrow">Check compatibility →</a>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">⟳</span>
+          <h3>Future Forecasts</h3>
+          <p>A clear, honest look at what's ahead — the opportunities, the challenges, and the timing of what matters most in your life.</p>
+          <a href="reading.html" class="feature-arrow">See what's ahead →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ HOW IT WORKS ░░ -->
+  <div class="how-section">
+    <div class="how-inner fade-up">
+      <div style="text-align:center;">
+        <span class="eyebrow">Simple and fast</span>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;">Four steps to clarity</h2>
+      </div>
+      <div class="how-grid">
+        <div class="how-step">
+          <div class="step-num">I</div>
+          <h3>Enter Birth Data</h3>
+          <p>Name, birth date, exact time, and city of birth for maximum astrological precision.</p>
+        </div>
+        <div class="how-step">
+          <div class="step-num">II</div>
+          <h3>Choose Your Focus</h3>
+          <p>Love, career, life purpose — or let the full guide decide what you most need to hear.</p>
+        </div>
+        <div class="how-step">
+          <div class="step-num">III</div>
+          <h3>AI Interprets</h3>
+          <p>Our guide synthesises your personal blueprint with thousands of years of accumulated wisdom.</p>
+        </div>
+        <div class="how-step">
+          <div class="step-num">IV</div>
+          <h3>Receive Clarity</h3>
+          <p>A personalised, detailed reading delivered in seconds. Yours to revisit any time.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ QUICK READING PREVIEW ░░ -->
+  <div class="preview-section fade-up">
+    <div class="preview-card">
+      <div class="preview-left">
+        <span class="eyebrow">Begin Now</span>
+        <h2>Your most accurate<br>reading <em>starts here</em></h2>
+        <p>Enter just a few details and our AI will craft a reading specifically for you — covering love, career, and what the next season of your life holds.</p>
+        <ul class="preview-checklist">
+          <li>Personalised to your exact birth data</li>
+          <li>Combines astrology, insight cards & number patterns</li>
+          <li>Results in under 30 seconds</li>
+          <li>Free to try — no account needed</li>
+        </ul>
+      </div>
+      <div class="preview-form">
+        <h3>Quick Reading</h3>
+        <div class="pf-group">
+          <label>Your Name</label>
+          <input type="text" id="qname" placeholder="Enter your name" />
+        </div>
+        <div class="pf-row">
+          <div class="pf-group">
+            <label>Date of Birth</label>
+            <input type="date" id="qdob" />
+          </div>
+          <div class="pf-group">
+            <label>Birth Time</label>
+            <input type="time" id="qtime" />
+          </div>
+        </div>
+        <div class="pf-group">
+          <label>Place of Birth</label>
+          <input type="text" id="qplace" placeholder="City, Country" />
+        </div>
+        <div class="pf-group">
+          <label>Reading Focus</label>
+          <select id="qfocus">
+            <option value="">Choose a focus…</option>
+            <option>Love & Relationships</option>
+            <option>Career & Purpose</option>
+            <option>Overall Life Path</option>
+            <option>Finances & Abundance</option>
+            <option>Spirituality & Growth</option>
+          </select>
+        </div>
+        <button class="pf-submit" onclick="quickReading()">✦ &nbsp;Reveal My Reading</button>
+        <div id="qResult" style="display:none;margin-top:24px;padding-top:20px;border-top:1px solid var(--border2);">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;">Your Reading</div>
+          <p id="qResultText" style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;line-height:1.75;color:var(--text2);"></p>
+          <a href="reading.html" style="display:inline-block;margin-top:16px;font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:0.1em;">Get full reading →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ TESTIMONIALS ░░ -->
+  <div class="testi-section">
+    <div class="testi-inner fade-up">
+      <div class="testi-header">
+        <span class="eyebrow">What people are saying</span>
+        <h2>What seekers are saying</h2>
+        <p>Real readings. Real clarity. Real people.</p>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">The birth profile reading described aspects of my personality I have never shared with anyone. It felt like someone finally understood me at a soul level.</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">SR</div>
+            <div>
+              <div class="author-name">Sofia R.</div>
+              <div class="author-info">Scorpio · New York</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">I was a complete sceptic. The career forecast InSight gave me three months ago has played out almost exactly. I am genuinely stunned. Remarkable.</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">JK</div>
+            <div>
+              <div class="author-name">James K.</div>
+              <div class="author-info">Capricorn · London</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">The compatibility reading helped me and my partner understand our dynamic on a completely new level. We now return to it as a guide. Life-changing.</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">AL</div>
+            <div>
+              <div class="author-name">Aria L.</div>
+              <div class="author-info">Libra · Sydney</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ FINAL CTA ░░ -->
+  <div class="final-cta fade-up">
+    <h2>Your future<br>is <em>waiting</em></h2>
+    <p>It takes 60 seconds. All you need is your birth data and an open heart.</p>
+    <div class="final-cta-btns">
+      <a href="reading.html" class="btn-glow">✦ &nbsp;Begin My Reading — Free</a>
+      <a href="about.html" class="btn-ghost">Learn About InSight</a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">InSight</div>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="reading.html">Reading</a></li>
+      <li><a href="horoscope.html">Horoscope</a></li>
+      <li><a href="compatibility.html">Compatibility</a></li>
+      <li><a href="blog.html">Journal</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="terms.html">Terms</a></li>
+    </ul>
+    <p class="footer-copy">© 2025 InSight. All rights reserved.</p>
+  </footer>
+
+</main>
+
+<script src="main.js"></script>
+<script>
+// Disclaimer logic
+function toggleAccept() {
+  const checked = document.getElementById('agreeCheck').checked;
+  const btn = document.getElementById('acceptBtn');
+  btn.disabled = !checked;
+  btn.classList.toggle('enabled', checked);
+}
+function acceptDisclaimer() {
+  if (!document.getElementById('agreeCheck').checked) return;
+  sessionStorage.setItem('insight_accepted', 'true');
+  document.getElementById('disclaimerOverlay').classList.add('hidden');
+  setTimeout(() => { document.getElementById('disclaimerOverlay').style.display = 'none'; }, 700);
+}
+// Show disclaimer unless already accepted this session
+if (sessionStorage.getItem('insight_accepted') === 'true') {
+  document.getElementById('disclaimerOverlay').style.display = 'none';
+}
+const signs = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+const container = document.getElementById('floatingSigns');
+for (let i = 0; i < 16; i++) {
+  const el = document.createElement('div');
+  el.className = 'fsign';
+  el.textContent = signs[Math.floor(Math.random() * signs.length)];
+  const size = Math.random() * 32 + 16;
+  el.style.cssText = `
+    font-size:${size}px;
+    left:${Math.random() * 95}%;
+    top:${Math.random() * 80 + 10}%;
+    animation-duration:${Math.random() * 8 + 6}s;
+    animation-delay:${Math.random() * 6}s;
+    opacity:${Math.random() * 0.15 + 0.05};
+  `;
+  container.appendChild(el);
+}
+
+// Quick reading
+async function quickReading() {
+  const name = document.getElementById('qname').value.trim();
+  const dob = document.getElementById('qdob').value;
+  const time = document.getElementById('qtime').value;
+  const place = document.getElementById('qplace').value.trim();
+  const focus = document.getElementById('qfocus').value;
+
+  if (!name || !dob) { alert('Please enter your name and date of birth.'); return; }
+
+  const btn = document.querySelector('.pf-submit');
+  btn.textContent = '✦  Reading the stars…';
+  btn.disabled = true;
+
+  const prompt = `You are InSight. Give a personalised, poetic fortune reading (3-4 sentences, under 80 words) for ${name}, born ${dob}${time?' at '+time:''}, ${place||'unknown location'}. Focus: ${focus||'general life guidance'}. Be specific, evocative, forward-looking. Speak directly to them. Mention something astrological.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, messages:[{role:'user',content:prompt}] })
+    });
+    const data = await res.json();
+    const text = data.content?.find(b=>b.type==='text')?.text || 'Your future speak softly right now. Try again.';
+    document.getElementById('qResultText').textContent = text;
+    document.getElementById('qResult').style.display = 'block';
+  } catch(e) {
+    document.getElementById('qResultText').textContent = 'The personal connection is momentarily quiet. Please try again.';
+    document.getElementById('qResult').style.display = 'block';
+  }
+
+  btn.textContent = '✦  Reveal My Reading';
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

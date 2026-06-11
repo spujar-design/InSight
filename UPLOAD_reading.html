@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>InSight — Your Personal Guide</title>
+<link rel="stylesheet" href="style.css" />
+<style>
+
+/* ── LAYOUT ── */
+body { overflow: hidden; height: 100vh; }
+
+.chat-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  height: 100vh;
+  padding-top: 72px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  background: rgba(7,5,15,0.95);
+  border-right: 1px solid var(--border2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+}
+
+.sidebar-header {
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid var(--border2);
+}
+.sidebar-header h3 {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+/* User profile card */
+.profile-card {
+  background: rgba(201,168,76,0.05);
+  border: 1px solid var(--border2);
+  padding: 16px;
+  display: none;
+}
+.profile-card.visible { display: block; }
+.profile-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--gold2);
+  margin-bottom: 4px;
+}
+.profile-details {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  line-height: 1.8;
+}
+.profile-sign {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  color: var(--gold);
+  opacity: 0.5;
+  float: right;
+  margin-top: -8px;
+}
+
+/* Suggested questions */
+.suggestions {
+  padding: 16px 20px;
+  flex: 1;
+  overflow-y: auto;
+}
+.suggestions-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: block;
+}
+.suggestion-btn {
+  width: 100%;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 12px 14px;
+  text-align: left;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: all 0.2s;
+  display: block;
+}
+.suggestion-btn:hover {
+  background: rgba(201,168,76,0.06);
+  border-color: rgba(201,168,76,0.3);
+  color: var(--text);
+}
+.suggestion-btn::before {
+  content: '✦ ';
+  color: var(--gold);
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+/* New chat */
+.new-chat-btn {
+  margin: 16px 20px;
+  width: calc(100% - 40px);
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--gold);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.new-chat-btn:hover { background: var(--gold-dim); }
+
+/* ── MAIN CHAT AREA ── */
+.chat-main {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Onboarding form (step 1) */
+.onboarding {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  overflow-y: auto;
+}
+.onboarding.hidden { display: none; }
+
+.onboard-card {
+  max-width: 560px;
+  width: 100%;
+  text-align: center;
+}
+.onboard-symbol {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 56px;
+  color: var(--gold);
+  opacity: 0.5;
+  display: block;
+  margin-bottom: 16px;
+  animation: pulse2 4s ease-in-out infinite;
+}
+.onboard-card h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 40px;
+  font-weight: 300;
+  margin-bottom: 8px;
+}
+.onboard-card h1 em { font-style: italic; color: var(--gold2); }
+.onboard-card > p {
+  font-size: 15px;
+  color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: 36px;
+}
+
+.onboard-form {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ob-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.ob-group { display: flex; flex-direction: column; gap: 6px; }
+.ob-group label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--text3);
+  text-transform: uppercase;
+}
+.ob-group input, .ob-group select {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+.ob-group input:focus, .ob-group select:focus { border-color: rgba(201,168,76,0.5); }
+.ob-group select option { background: #0d0b1a; }
+
+.ob-submit {
+  width: 100%;
+  background: linear-gradient(135deg, var(--gold2), var(--gold));
+  border: none;
+  color: #000;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 16px;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 24px rgba(201,168,76,0.2);
+}
+.ob-submit:hover { box-shadow: 0 4px 32px rgba(201,168,76,0.4); transform: translateY(-1px); }
+
+/* ── CHAT INTERFACE (step 2) ── */
+.chat-interface {
+  flex: 1;
+  display: none;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+.chat-interface.visible { display: flex; }
+
+/* Chat header */
+.chat-header {
+  padding: 16px 28px;
+  border-bottom: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(7,5,15,0.6);
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;
+}
+.chat-header-left { display: flex; align-items: center; gap: 14px; }
+.chat-header-avatar {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(120,60,200,0.2));
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  color: var(--gold2);
+}
+.chat-header-info h4 {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+}
+.chat-header-info span {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--teal);
+  letter-spacing: 0.1em;
+  display: flex; align-items: center; gap: 6px;
+}
+.chat-header-info span::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--teal);
+  box-shadow: 0 0 8px var(--teal);
+  display: block;
+}
+.chat-header-right {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+  text-align: right;
+}
+
+/* Messages */
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  scroll-behavior: smooth;
+}
+.messages::-webkit-scrollbar { width: 4px; }
+.messages::-webkit-scrollbar-track { background: transparent; }
+.messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* Message bubbles */
+.msg {
+  display: flex;
+  gap: 14px;
+  max-width: 85%;
+  animation: fadeUp 0.4s forwards;
+}
+.msg.user { flex-direction: row-reverse; align-self: flex-end; }
+.msg.assistant { align-self: flex-start; }
+
+.msg-avatar {
+  width: 32px; height: 32px;
+  border-radius: 0;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  margin-top: 2px;
+}
+.msg.assistant .msg-avatar {
+  background: rgba(201,168,76,0.1);
+  border: 1px solid var(--border);
+  color: var(--gold2);
+}
+.msg.user .msg-avatar {
+  background: rgba(120,60,200,0.15);
+  border: 1px solid rgba(120,60,200,0.3);
+  color: rgba(200,180,255,0.8);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+.msg-bubble {
+  padding: 16px 20px;
+  line-height: 1.75;
+  font-size: 15px;
+}
+.msg.assistant .msg-bubble {
+  background: rgba(13,11,26,0.8);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-weight: 300;
+  border-left: 2px solid rgba(201,168,76,0.3);
+}
+.msg.user .msg-bubble {
+  background: rgba(120,60,200,0.12);
+  border: 1px solid rgba(120,60,200,0.2);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+}
+
+.msg-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+  margin-top: 6px;
+  display: block;
+}
+.msg.user .msg-time { text-align: right; }
+
+/* Typing indicator */
+.typing-indicator .msg-bubble {
+  padding: 18px 24px;
+}
+.typing-dots {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.typing-dots span {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0.4;
+  animation: typingPulse 1.2s ease-in-out infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingPulse {
+  0%,100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+/* Input area */
+.chat-input-area {
+  padding: 20px 28px 24px;
+  border-top: 1px solid var(--border2);
+  background: rgba(7,5,15,0.8);
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;
+}
+.chat-input-wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  padding: 12px 16px;
+  transition: border-color 0.2s;
+}
+.chat-input-wrap:focus-within { border-color: rgba(201,168,76,0.4); }
+
+#chatInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  resize: none;
+  max-height: 120px;
+  min-height: 24px;
+}
+#chatInput::placeholder { color: var(--text3); }
+#chatInput::-webkit-scrollbar { width: 3px; }
+#chatInput::-webkit-scrollbar-thumb { background: var(--border); }
+
+.send-btn {
+  width: 36px; height: 36px;
+  background: var(--gold);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  font-size: 16px;
+  color: #000;
+}
+.send-btn:hover { background: var(--gold2); transform: scale(1.05); }
+.send-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+
+.input-hint {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Welcome message in chat */
+.welcome-msg {
+  text-align: center;
+  padding: 20px 0 10px;
+}
+.welcome-msg .wm-symbol {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 48px;
+  color: var(--gold);
+  opacity: 0.4;
+  display: block;
+  margin-bottom: 12px;
+}
+.welcome-msg h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 300;
+  margin-bottom: 8px;
+}
+.welcome-msg p {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.7;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .chat-layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="cursor"></div>
+<div class="cursor-ring"></div>
+<canvas id="starfield"></canvas>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-mark"></div>
+    InSight
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="reading.html">Get Reading</a></li>
+    <li><a href="horoscope.html">Horoscope</a></li>
+    <li><a href="compatibility.html">Compatibility</a></li>
+    <li><a href="blog.html">Journal</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <a href="reading.html" class="nav-cta">Begin Reading</a>
+</nav>
+
+<div class="chat-layout page">
+
+  <!-- ░░ SIDEBAR ░░ -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h3>Your Profile</h3>
+      <div class="profile-card" id="profileCard">
+        <span class="profile-sign" id="profileSign">✦</span>
+        <div class="profile-name" id="profileName">—</div>
+        <div class="profile-details" id="profileDetails"></div>
+      </div>
+    </div>
+
+    <div class="suggestions">
+      <span class="suggestions-label">Ask InSight about…</span>
+      <button class="suggestion-btn" onclick="sendSuggestion(this)">What does my birth profile say about my personality?</button>
+      <button class="suggestion-btn" onclick="sendSuggestion(this)">What career path suits me best?</button>
+      <button class="suggestion-btn" onclick="sendSuggestion(this)">What should I know about my love life right now?</button>
+      <button class="suggestion-btn" onclick="sendSuggestion(this)">What are my biggest strengths and blind spots?</button>
+      <button class="suggestion-btn" onclick="sendSuggestion(this)">What does the coming year look like for me?</button>
+      <button class="suggestion-btn" onclick="sendSuggestion(this)">Am I on the right path in life?</button>
+      <button class="suggestion-btn" onclick="sendSuggestion(this)">What is my life purpose?</button>
+      <button class="suggestion-btn" onclick="sendSuggestion(this)">How do I handle relationships and conflicts?</button>
+      <button class="suggestion-btn" onclick="sendSuggestion(this)">What financial patterns should I be aware of?</button>
+      <button class="suggestion-btn" onclick="sendSuggestion(this)">What past patterns keep repeating in my life?</button>
+    </div>
+
+    <button class="new-chat-btn" onclick="resetChat()">
+      ✦ New Session
+    </button>
+  </aside>
+
+  <!-- ░░ MAIN ░░ -->
+  <main class="chat-main">
+
+    <!-- STEP 1: Onboarding -->
+    <div class="onboarding" id="onboarding">
+      <div class="onboard-card fade-up">
+        <span class="onboard-symbol">✦</span>
+        <h1>Tell us about <em>yourself</em></h1>
+        <p>Enter your details once and then ask InSight anything — about your personality, career, love life, purpose, or whatever is on your mind.</p>
+
+        <div class="onboard-form">
+          <div class="ob-group">
+            <label>Your Full Name</label>
+            <input type="text" id="obName" placeholder="What should we call you?" />
+          </div>
+          <div class="ob-row">
+            <div class="ob-group">
+              <label>Date of Birth</label>
+              <input type="date" id="obDob" />
+            </div>
+            <div class="ob-group">
+              <label>Exact Birth Time</label>
+              <input type="time" id="obTime" />
+            </div>
+          </div>
+          <div class="ob-group">
+            <label>Place of Birth</label>
+            <input type="text" id="obPlace" placeholder="City, Country" />
+          </div>
+          <div class="ob-group">
+            <label>Gender (optional)</label>
+            <select id="obGender">
+              <option value="">Prefer not to say</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Non-binary</option>
+            </select>
+          </div>
+          <button class="ob-submit" onclick="startChat()">Begin My InSight Session ✦</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: Chat interface -->
+    <div class="chat-interface" id="chatInterface">
+
+      <div class="chat-header">
+        <div class="chat-header-left">
+          <div class="chat-header-avatar">✦</div>
+          <div class="chat-header-info">
+            <h4>InSight Guide</h4>
+            <span>Connected · Personalised to you</span>
+          </div>
+        </div>
+        <div class="chat-header-right" id="sessionInfo"></div>
+      </div>
+
+      <div class="messages" id="messages">
+        <div class="welcome-msg">
+          <span class="wm-symbol">✦</span>
+          <h3 id="welcomeGreeting">Welcome</h3>
+          <p>Your session is personalised to your birth data. Ask me anything — about your personality, relationships, career, purpose, or what lies ahead.</p>
+        </div>
+      </div>
+
+      <div class="chat-input-area">
+        <div class="chat-input-wrap">
+          <textarea id="chatInput" placeholder="Ask InSight anything…" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+          <button class="send-btn" id="sendBtn" onclick="sendMessage()">↑</button>
+        </div>
+        <p class="input-hint">InSight is for self-reflection only · Not professional advice · <a href="terms.html" style="color:var(--gold);">Terms</a></p>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script src="main.js"></script>
+<script>
+let userProfile = null;
+let conversationHistory = [];
+let isTyping = false;
+
+const ZODIAC = [
+  { sign:'Capricorn', symbol:'♑', from:[12,22], to:[1,19] },
+  { sign:'Aquarius',  symbol:'♒', from:[1,20],  to:[2,18] },
+  { sign:'Pisces',    symbol:'♓', from:[2,19],  to:[3,20] },
+  { sign:'Aries',     symbol:'♈', from:[3,21],  to:[4,19] },
+  { sign:'Taurus',    symbol:'♉', from:[4,20],  to:[5,20] },
+  { sign:'Gemini',    symbol:'♊', from:[5,21],  to:[6,20] },
+  { sign:'Cancer',    symbol:'♋', from:[6,21],  to:[7,22] },
+  { sign:'Leo',       symbol:'♌', from:[7,23],  to:[8,22] },
+  { sign:'Virgo',     symbol:'♍', from:[8,23],  to:[9,22] },
+  { sign:'Libra',     symbol:'♎', from:[9,23],  to:[10,22] },
+  { sign:'Scorpio',   symbol:'♏', from:[10,23], to:[11,21] },
+  { sign:'Sagittarius',symbol:'♐',from:[11,22], to:[12,21] },
+];
+
+function getZodiacSign(dateStr) {
+  if (!dateStr) return { sign: 'Unknown', symbol: '✦' };
+  const d = new Date(dateStr);
+  const m = d.getMonth() + 1, day = d.getDate();
+  for (const z of ZODIAC) {
+    const [fm, fd] = z.from, [tm, td] = z.to;
+    if ((m === fm && day >= fd) || (m === tm && day <= td)) return z;
+    if (fm > tm && (m === fm && day >= fd || m === tm && day <= td)) return z;
+  }
+  return { sign: 'Capricorn', symbol: '♑' };
+}
+
+function startChat() {
+  const name = document.getElementById('obName').value.trim();
+  const dob = document.getElementById('obDob').value;
+  const time = document.getElementById('obTime').value;
+  const place = document.getElementById('obPlace').value.trim();
+  const gender = document.getElementById('obGender').value;
+
+  if (!name || !dob || !place) {
+    alert('Please enter your name, date of birth, and place of birth to continue.');
+    return;
+  }
+
+  const zodiac = getZodiacSign(dob);
+  userProfile = { name, dob, time, place, gender, zodiac };
+
+  // Update sidebar
+  document.getElementById('profileName').textContent = name;
+  document.getElementById('profileSign').textContent = zodiac.symbol;
+  document.getElementById('profileDetails').innerHTML =
+    `${zodiac.sign}<br>${new Date(dob).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}${time?'<br>'+time:''}<br>${place}`;
+  document.getElementById('profileCard').classList.add('visible');
+
+  // Update header
+  document.getElementById('welcomeGreeting').textContent = `Welcome, ${name.split(' ')[0]}`;
+  document.getElementById('sessionInfo').innerHTML = `${zodiac.symbol} ${zodiac.sign}<br>${place}`;
+
+  // Show chat
+  document.getElementById('onboarding').classList.add('hidden');
+  document.getElementById('chatInterface').classList.add('visible');
+
+  // Send welcome message from InSight
+  setTimeout(() => {
+    const dobFormatted = new Date(dob).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+    addWelcomeFromAI(name, zodiac, dobFormatted, place);
+  }, 600);
+}
+
+async function addWelcomeFromAI(name, zodiac, dob, place) {
+  showTyping();
+  const prompt = buildSystemPrompt() + `\n\nGreet ${name} warmly and confidently. Mention their ${zodiac.sign} profile and that they were born in ${place}. Tell them InSight is here to give them real, honest perspective on their personality, relationships, career, and future — and that they can ask anything. Keep it sharp, warm, and forward-looking. Under 60 words. No mystical language. No asterisks.`;
+  const text = await callAI([{ role: 'user', content: prompt }]);
+  hideTyping();
+  addMessage('assistant', text);
+}
+
+function buildSystemPrompt() {
+  const { name, dob, time, place, gender, zodiac } = userProfile;
+  const dobFormatted = new Date(dob).toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+  return `You are InSight — a sharp, intelligent AI that helps people understand themselves and their future clearly. You are not an astrology app. You are not a fortune teller. You use birth data as a personalised input to generate meaningful, grounded insights about a person's personality, behavioural patterns, relationships, and life direction.
+
+Think of yourself as a brilliant, honest friend who happens to have deep knowledge of human psychology and behavioural patterns. You speak plainly, directly, and intelligently. No mystical language. No vague fluff. Real talk.
+
+User profile:
+- Name: ${name}
+- Date of birth: ${dobFormatted}
+- Birth time: ${time || 'unknown'}
+- Place of birth: ${place}
+- Birth sign: ${zodiac.sign}
+- Gender: ${gender || 'not specified'}
+
+How to respond:
+- Use the user's first name naturally — keep it personal and direct
+- Reference their birth data and sign as relevant context, not as mystical prophecy
+- Be honest, warm, and grounded — like a smart friend giving real perspective
+- Give specific, personalised answers — never generic filler
+- Do NOT use words like: cosmos, celestial, ancient wisdom, mystical, oracle, arcane, stars speak, heavens, divination, or any similar language
+- DO use words like: pattern, tendency, strength, future, clarity, direction, potential, opportunity, challenge, growth
+- Do NOT predict specific future events with certainty — frame things as likely patterns and tendencies
+- Do NOT give medical, financial, or legal advice
+- If someone seems in crisis, gently point them to professional support
+- Keep responses to 3–4 focused paragraphs
+- No asterisks, bullet points, or markdown — write in clean flowing prose`;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text || isTyping) return;
+
+  input.value = '';
+  autoResize(input);
+  addMessage('user', text);
+  conversationHistory.push({ role: 'user', content: text });
+
+  showTyping();
+  document.getElementById('sendBtn').disabled = true;
+
+  const messages = [
+    { role: 'user', content: buildSystemPrompt() + '\n\nConversation so far:\n' + conversationHistory.slice(0, -1).map(m => `${m.role === 'user' ? userProfile.name : 'InSight'}: ${m.content}`).join('\n') + `\n\n${userProfile.name}: ${text}\n\nInSight:` }
+  ];
+
+  const reply = await callAI(messages);
+  hideTyping();
+  addMessage('assistant', reply);
+  conversationHistory.push({ role: 'assistant', content: reply });
+  document.getElementById('sendBtn').disabled = false;
+}
+
+async function callAI(messages) {
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages
+      })
+    });
+    const data = await res.json();
+    return data.content?.find(b => b.type === 'text')?.text || 'The connection is quiet right now. Please try again.';
+  } catch(e) {
+    return 'Something went wrong. Please try again.';
+  }
+}
+
+function addMessage(role, text) {
+  const messages = document.getElementById('messages');
+  const now = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  const initials = userProfile ? userProfile.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : 'U';
+
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  div.innerHTML = `
+    <div class="msg-avatar">${role === 'assistant' ? '✦' : initials}</div>
+    <div>
+      <div class="msg-bubble">${text.replace(/\n/g, '<br>')}</div>
+      <span class="msg-time">${now}</span>
+    </div>
+  `;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function showTyping() {
+  isTyping = true;
+  const messages = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg assistant typing-indicator';
+  div.id = 'typingIndicator';
+  div.innerHTML = `
+    <div class="msg-avatar">✦</div>
+    <div class="msg-bubble">
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+    </div>
+  `;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function hideTyping() {
+  isTyping = false;
+  const el = document.getElementById('typingIndicator');
+  if (el) el.remove();
+}
+
+function sendSuggestion(btn) {
+  if (!userProfile) { alert('Please complete your profile first.'); return; }
+  document.getElementById('chatInput').value = btn.textContent.replace('✦ ', '').trim();
+  sendMessage();
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function resetChat() {
+  conversationHistory = [];
+  const messages = document.getElementById('messages');
+  messages.innerHTML = `
+    <div class="welcome-msg">
+      <span class="wm-symbol">✦</span>
+      <h3 id="welcomeGreeting">Welcome back, ${userProfile?.name?.split(' ')[0] || ''}</h3>
+      <p>New session started. Ask me anything.</p>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>

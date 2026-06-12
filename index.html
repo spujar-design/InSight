@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>InSight — The Future Waits for You</title>
+<title>InSight — Your Future, Clearly</title>
 <link rel="stylesheet" href="style.css" />
 <style>
 
@@ -19,41 +19,39 @@
   max-width: 580px; width: 100%;
   background: rgba(13,11,26,0.98);
   border: 1px solid rgba(201,168,76,0.3);
-  padding: 48px 44px;
-  text-align: center;
-  position: relative;
+  padding: 48px 44px; text-align: center; position: relative;
   animation: slideUp 0.5s both;
 }
 @keyframes slideUp { from { transform:translateY(24px); opacity:0; } to { transform:translateY(0); opacity:1; } }
 .disclaimer-box::before {
-  content: ''; position: absolute; top:0; left:0; right:0; height:2px;
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
   background: linear-gradient(90deg, transparent, var(--gold), transparent);
 }
 .d-logo { font-family:'Cormorant Garamond',serif; font-size:32px; font-weight:300; letter-spacing:0.15em; color:var(--gold2); margin-bottom:6px; }
-.d-symbol { font-family:'Cormorant Garamond',serif; font-size:44px; color:var(--gold); opacity:0.5; display:block; margin-bottom:16px; }
-.d-tag { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; color:var(--gold); text-transform:uppercase; margin-bottom:20px; display:block; }
+.d-symbol { font-family:'Cormorant Garamond',serif; font-size:44px; color:var(--gold); opacity:0.5; display:block; margin-bottom:16px; animation:pulse2 3s ease-in-out infinite; }
+.d-tagline { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; color:var(--gold); text-transform:uppercase; margin-bottom:20px; display:block; }
 .d-title { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:300; margin-bottom:16px; }
-.d-text { font-size:14px; color:var(--text2); line-height:1.75; margin-bottom:16px; }
+.d-text { font-size:14px; color:var(--text2); line-height:1.8; margin-bottom:16px; }
 .d-warning {
   background:rgba(201,168,76,0.05); border:1px solid rgba(201,168,76,0.15);
   padding:16px 20px; margin:20px 0; text-align:left;
 }
-.d-warning li { font-size:13px; color:rgba(237,232,255,0.55); line-height:1.8; list-style:none; padding-left:16px; position:relative; }
-.d-warning li::before { content:'—'; position:absolute; left:0; color:var(--gold); opacity:0.5; }
-.d-check { display:flex; align-items:flex-start; gap:10px; text-align:left; margin:20px 0; cursor:pointer; }
-.d-check input { width:16px; height:16px; accent-color:var(--gold); flex-shrink:0; margin-top:2px; cursor:pointer; }
+.d-warning li { font-size:13px; color:rgba(237,232,255,0.6); line-height:1.8; list-style:none; padding-left:16px; position:relative; }
+.d-warning li::before { content:'—'; position:absolute; left:0; color:var(--gold); opacity:0.6; }
+.d-check { display:flex; align-items:flex-start; gap:12px; text-align:left; margin:20px 0; cursor:pointer; }
+.d-check input { width:18px; height:18px; accent-color:var(--gold); flex-shrink:0; margin-top:2px; cursor:pointer; }
 .d-check label { font-size:13px; color:var(--text2); line-height:1.6; cursor:pointer; }
-.d-check label a { color:var(--gold); }
-.d-btn {
+.d-check label a { color:var(--gold); text-decoration:underline; }
+.d-accept {
   width:100%; background:linear-gradient(135deg,var(--gold2),var(--gold));
-  border:none; color:#000; font-family:'DM Mono',monospace;
-  font-size:12px; letter-spacing:0.12em; text-transform:uppercase;
-  padding:15px; cursor:pointer; transition:all 0.2s; opacity:0.35;
+  border:none; color:#000; font-family:'DM Mono',monospace; font-size:12px;
+  letter-spacing:0.12em; text-transform:uppercase; padding:16px; cursor:pointer;
+  transition:all 0.2s; opacity:0.4;
 }
-.d-btn.on { opacity:1; box-shadow:0 4px 24px rgba(201,168,76,0.3); }
-.d-btn.on:hover { transform:translateY(-2px); }
-.d-skip { display:block; margin-top:12px; font-family:'DM Mono',monospace; font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.1em; cursor:pointer; background:none; border:none; width:100%; transition:color 0.2s; }
-.d-skip:hover { color:var(--text2); }
+.d-accept.on { opacity:1; box-shadow:0 4px 24px rgba(201,168,76,0.3); }
+.d-accept.on:hover { transform:translateY(-2px); }
+.d-decline { display:block; margin-top:12px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; color:var(--text3); text-transform:uppercase; cursor:pointer; background:none; border:none; width:100%; transition:color 0.2s; }
+.d-decline:hover { color:var(--text2); }
 
 /* ── HERO ── */
 .hero {
@@ -66,164 +64,148 @@
 .hero-glow {
   position:absolute; inset:0; pointer-events:none;
   background: radial-gradient(ellipse at 50% 40%, rgba(120,60,200,0.15) 0%, rgba(201,168,76,0.08) 40%, transparent 70%);
+  animation: glowPulse 8s ease-in-out infinite;
 }
-.orbit {
-  position:absolute; top:50%; left:50%; border-radius:50%; border:1px solid rgba(201,168,76,0.08);
-  pointer-events:none; animation:spin linear infinite;
-}
-.orbit.o1 { width:700px;height:700px;margin:-350px 0 0 -350px;animation-duration:60s; }
-.orbit.o1::before { content:'';position:absolute;width:7px;height:7px;background:var(--gold);border-radius:50%;top:-4px;left:50%;margin-left:-3px;box-shadow:0 0 12px var(--gold); }
-.orbit.o2 { width:480px;height:480px;margin:-240px 0 0 -240px;animation-duration:40s;animation-direction:reverse;border-color:rgba(0,212,180,0.06); }
-.orbit.o2::before { content:'';position:absolute;width:5px;height:5px;background:var(--teal);border-radius:50%;bottom:-3px;left:50%;margin-left:-2px;box-shadow:0 0 8px var(--teal); }
-@keyframes spin { to { transform:rotate(360deg); } }
+@keyframes glowPulse { 0%,100%{opacity:0.7;} 50%{opacity:1;} }
 
 .hero-badge {
   display:inline-flex; align-items:center; gap:10px;
   background:rgba(201,168,76,0.08); border:1px solid rgba(201,168,76,0.2);
-  border-radius:100px; padding:7px 18px 7px 9px; margin-bottom:32px;
-  opacity:0; animation:fadeUp 0.7s 0.1s forwards;
+  border-radius:100px; padding:8px 20px 8px 10px;
+  margin-bottom:32px;
+  animation: fadeUp 0.7s 0.1s both;
 }
-.badge-dot {
-  width:26px;height:26px;border-radius:50%;
-  background:rgba(201,168,76,0.15);
-  display:flex;align-items:center;justify-content:center;font-size:12px;
-  animation:badgePulse 2s ease-in-out infinite;
-}
-@keyframes badgePulse { 0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.3);}50%{box-shadow:0 0 0 6px rgba(201,168,76,0);} }
-.badge-txt { font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.12em;color:var(--gold2);text-transform:uppercase; }
+.badge-dot { width:28px; height:28px; background:rgba(201,168,76,0.12); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; animation:badgePulse 2s ease-in-out infinite; }
+@keyframes badgePulse { 0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.3);} 50%{box-shadow:0 0 0 6px rgba(201,168,76,0);} }
+.badge-text { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.12em; color:var(--gold2); text-transform:uppercase; }
 
 .hero h1 {
   font-family:'Cormorant Garamond',serif;
-  font-size:clamp(56px,9vw,118px); font-weight:300; line-height:0.95;
-  letter-spacing:-0.02em; margin-bottom:10px;
-  opacity:0; animation:fadeUp 0.9s 0.2s forwards;
+  font-size: clamp(60px, 9vw, 120px);
+  font-weight:300; line-height:1.25; letter-spacing:-0.02em;
+  margin-bottom:28px;
+  animation: fadeUp 0.9s 0.2s both;
 }
-.hero h1 em { font-style:italic; color:var(--gold2); display:block; text-shadow:0 0 60px rgba(201,168,76,0.25); }
-.hero-sub-title {
-  font-family:'Cormorant Garamond',serif; font-size:clamp(16px,2vw,22px);
-  font-weight:300; font-style:italic; color:var(--text2);
-  margin-bottom:24px; opacity:0; animation:fadeUp 0.9s 0.35s forwards;
-}
-.hero-desc {
-  font-size:16px; color:rgba(237,232,255,0.45); max-width:500px;
+.hero h1 em { font-style:italic; color:var(--gold2); text-shadow:0 0 60px rgba(201,168,76,0.25); }
+
+.hero-sub {
+  font-size:18px; color:var(--text2); max-width:540px;
   line-height:1.75; margin:0 auto 48px;
-  opacity:0; animation:fadeUp 0.9s 0.45s forwards;
+  animation: fadeUp 0.9s 0.35s both;
 }
-.hero-btns {
-  display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap;
-  opacity:0; animation:fadeUp 0.9s 0.6s forwards;
+
+.hero-cta {
+  display:flex; align-items:center; justify-content:center; gap:16px; flex-wrap:wrap;
+  animation: fadeUp 0.9s 0.5s both;
 }
 .btn-glow {
   display:inline-flex; align-items:center; gap:10px;
-  font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.1em;
-  text-transform:uppercase; color:#000;
-  background:linear-gradient(135deg,var(--gold2),var(--gold));
-  border:none; padding:16px 36px; cursor:none; text-decoration:none;
-  box-shadow:0 0 40px rgba(201,168,76,0.2),0 4px 20px rgba(0,0,0,0.4);
+  font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.1em; text-transform:uppercase;
+  color:#000; background:linear-gradient(135deg,var(--gold2),var(--gold));
+  border:none; padding:18px 40px; cursor:none; text-decoration:none;
+  box-shadow:0 0 40px rgba(201,168,76,0.25), 0 4px 20px rgba(0,0,0,0.4);
   transition:all 0.2s; position:relative; overflow:hidden;
 }
-.btn-glow::before { content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.15) 0%,transparent 60%); }
-.btn-glow:hover { transform:translateY(-3px); box-shadow:0 0 60px rgba(201,168,76,0.35),0 8px 30px rgba(0,0,0,0.4); }
-
-.scroll-hint {
-  position:absolute; bottom:32px; left:50%; transform:translateX(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:8px;
-  opacity:0; animation:fadeUp 1s 1.1s forwards;
-}
-.scroll-hint span { font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.2em;color:var(--text3);text-transform:uppercase; }
-.scroll-mouse { width:20px;height:32px;border:1px solid rgba(201,168,76,0.25);border-radius:10px;display:flex;justify-content:center;padding-top:5px; }
-.scroll-wheel { width:3px;height:6px;background:var(--gold);border-radius:2px;animation:sw 2s ease-in-out infinite; }
-@keyframes sw { 0%,100%{transform:translateY(0);opacity:1;}100%{transform:translateY(8px);opacity:0;} }
-
-/* ── STATS ── */
-.stats-bar { border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);background:rgba(13,11,26,0.6);backdrop-filter:blur(10px);position:relative;z-index:1; }
-.stats-inner { max-width:1200px;margin:0 auto;padding:0 80px;display:grid;grid-template-columns:repeat(4,1fr); }
-.stat-item { padding:36px 0;text-align:center;border-right:1px solid var(--border2); }
-.stat-item:last-child { border-right:none; }
-.stat-num { font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;color:var(--gold2);display:block;line-height:1;margin-bottom:6px;text-shadow:0 0 30px rgba(201,168,76,0.15); }
-.stat-label { font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.15em;color:var(--text3);text-transform:uppercase; }
+.btn-glow::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,0.2) 0%,transparent 60%); }
+.btn-glow:hover { transform:translateY(-3px); box-shadow:0 0 60px rgba(201,168,76,0.4), 0 8px 30px rgba(0,0,0,0.4); }
 
 /* ── HOW IT WORKS ── */
-.how-section { max-width:1200px;margin:0 auto;padding:100px 80px; }
-.section-header { text-align:center;margin-bottom:72px; }
-.section-header h2 { font-family:'Cormorant Garamond',serif;font-size:clamp(36px,4vw,52px);font-weight:300;line-height:1.1;margin-bottom:12px; }
-.section-header p { font-size:16px;color:var(--text2); }
-.steps-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border2); }
-.step-card { background:var(--bg);padding:48px 36px;position:relative; }
-.step-card::before { content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);transform:scaleX(0);transition:transform 0.4s; }
-.step-card:hover { background:rgba(201,168,76,0.02); }
-.step-card:hover::before { transform:scaleX(1); }
-.step-num { font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;display:block; }
-.step-card h3 { font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:12px; }
-.step-card p { font-size:15px;color:var(--text2);line-height:1.7; }
+.how-section { background:var(--bg2); border-top:1px solid var(--border2); border-bottom:1px solid var(--border2); }
+.how-inner { max-width:1100px; margin:0 auto; padding:80px 60px; }
+.how-inner h2 { font-family:'Cormorant Garamond',serif; font-size:44px; font-weight:300; text-align:center; margin-bottom:60px; }
+.how-inner h2 em { font-style:italic; color:var(--gold2); }
+.steps { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border2); }
+.step { background:var(--bg2); padding:44px 36px; position:relative; }
+.step-n { font-family:'Cormorant Garamond',serif; font-size:56px; font-weight:300; color:rgba(201,168,76,0.15); line-height:1; margin-bottom:20px; display:block; }
+.step h3 { font-size:18px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:12px; }
+.step p { font-size:15px; color:var(--text2); line-height:1.7; }
 
 /* ── FEATURES ── */
-.features-section { background:var(--bg2); }
-.features-inner { max-width:1200px;margin:0 auto;padding:100px 80px; }
-.features-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border2); }
-.feature-card { background:var(--bg2);padding:44px 36px;transition:background 0.3s;position:relative;overflow:hidden; }
-.feature-card::after { content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);transform:scaleX(0);transition:transform 0.5s; }
-.feature-card:hover { background:rgba(201,168,76,0.03); }
-.feature-card:hover::after { transform:scaleX(1); }
-.feature-icon { font-size:28px;margin-bottom:20px;display:block;opacity:0.7; }
-.feature-card h3 { font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px; }
-.feature-card p { font-size:14px;color:var(--text2);line-height:1.7; }
-.feature-link { display:inline-block;margin-top:16px;font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:0.1em;text-decoration:none;opacity:0;transition:opacity 0.2s; }
-.feature-card:hover .feature-link { opacity:1; }
+.features { max-width:1100px; margin:0 auto; padding:80px 60px; }
+.features h2 { font-family:'Cormorant Garamond',serif; font-size:44px; font-weight:300; text-align:center; margin-bottom:12px; }
+.features > p { text-align:center; font-size:16px; color:var(--text2); margin-bottom:52px; }
+.feat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border2); }
+.feat { background:var(--bg); padding:40px 36px; transition:background 0.3s; position:relative; overflow:hidden; }
+.feat::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); transform:scaleX(0); transition:transform 0.4s; }
+.feat:hover { background:rgba(201,168,76,0.03); }
+.feat:hover::before { transform:scaleX(1); }
+.feat-icon { font-size:28px; margin-bottom:18px; display:block; }
+.feat h3 { font-size:17px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; margin-bottom:10px; }
+.feat p { font-size:14px; color:var(--text2); line-height:1.7; }
+
+/* ── CHAT PREVIEW ── */
+.chat-preview { background:var(--bg2); border-top:1px solid var(--border2); }
+.chat-preview-inner { max-width:900px; margin:0 auto; padding:80px 60px; }
+.chat-preview-inner h2 { font-family:'Cormorant Garamond',serif; font-size:44px; font-weight:300; text-align:center; margin-bottom:12px; }
+.chat-preview-inner > p { text-align:center; font-size:16px; color:var(--text2); margin-bottom:48px; }
+.mock-chat { border:1px solid var(--border); background:var(--bg); overflow:hidden; }
+.mock-chat-header { padding:16px 24px; border-bottom:1px solid var(--border2); display:flex; align-items:center; gap:12px; background:rgba(7,5,15,0.8); }
+.mock-avatar { width:32px; height:32px; background:rgba(201,168,76,0.1); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:16px; color:var(--gold2); }
+.mock-name { font-size:14px; font-weight:600; }
+.mock-status { font-family:'DM Mono',monospace; font-size:10px; color:var(--teal); display:flex; align-items:center; gap:6px; }
+.mock-status::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--teal); box-shadow:0 0 8px var(--teal); display:block; }
+.mock-messages { padding:24px; display:flex; flex-direction:column; gap:16px; }
+.mock-msg { display:flex; gap:12px; max-width:85%; }
+.mock-msg.user { flex-direction:row-reverse; align-self:flex-end; }
+.mock-bubble { padding:14px 18px; font-size:14px; line-height:1.6; }
+.mock-msg.ai .mock-bubble { background:rgba(13,11,26,0.8); border:1px solid var(--border2); border-left:2px solid rgba(201,168,76,0.3); font-family:'Cormorant Garamond',serif; font-size:16px; font-weight:300; color:var(--text); }
+.mock-msg.user .mock-bubble { background:rgba(120,60,200,0.12); border:1px solid rgba(120,60,200,0.2); color:var(--text); }
+.mock-input { padding:16px 24px; border-top:1px solid var(--border2); display:flex; align-items:center; gap:12px; }
+.mock-input-box { flex:1; background:rgba(255,255,255,0.03); border:1px solid var(--border); padding:12px 16px; font-family:'Rajdhani',sans-serif; font-size:15px; color:var(--text3); }
+.mock-send { width:36px; height:36px; background:var(--gold); border:none; display:flex; align-items:center; justify-content:center; font-size:16px; color:#000; }
 
 /* ── TESTIMONIALS ── */
-.testi-section { max-width:1200px;margin:0 auto;padding:100px 80px; }
-.testi-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border2); }
-.testi-card { background:var(--bg);padding:40px;transition:background 0.3s;position:relative; }
-.testi-card:hover { background:rgba(201,168,76,0.02); }
-.testi-card::before { content:'"';font-family:'Cormorant Garamond',serif;font-size:90px;color:var(--gold);opacity:0.1;position:absolute;top:10px;left:24px;line-height:1; }
-.stars { color:var(--gold);font-size:13px;letter-spacing:2px;margin-bottom:14px; }
-.testi-text { font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;font-weight:300;line-height:1.75;color:var(--text);margin-bottom:24px;padding-top:20px; }
-.testi-author { display:flex;align-items:center;gap:12px; }
-.testi-avatar { width:36px;height:36px;background:rgba(201,168,76,0.1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;color:var(--gold2); }
-.testi-name { font-size:15px;font-weight:600; }
-.testi-info { font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.08em; }
+.testi { max-width:1100px; margin:0 auto; padding:80px 60px; }
+.testi h2 { font-family:'Cormorant Garamond',serif; font-size:44px; font-weight:300; text-align:center; margin-bottom:48px; }
+.testi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border2); }
+.testi-card { background:var(--bg); padding:40px; position:relative; }
+.testi-card::before { content:'"'; font-family:'Cormorant Garamond',serif; font-size:80px; color:var(--gold); opacity:0.1; position:absolute; top:10px; left:24px; line-height:1; }
+.testi-stars { color:var(--gold); font-size:13px; letter-spacing:2px; margin-bottom:14px; }
+.testi-text { font-family:'Cormorant Garamond',serif; font-size:18px; font-style:italic; font-weight:300; line-height:1.75; color:var(--text2); margin-bottom:24px; padding-top:20px; }
+.testi-author { display:flex; align-items:center; gap:12px; }
+.testi-av { width:36px; height:36px; background:var(--gold-dim); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-family:'DM Mono',monospace; font-size:11px; color:var(--gold2); }
+.testi-name { font-size:15px; font-weight:600; }
+.testi-info { font-family:'DM Mono',monospace; font-size:10px; color:var(--text3); letter-spacing:0.08em; }
 
 /* ── FINAL CTA ── */
-.final-cta { padding:120px 80px;text-align:center;position:relative;overflow:hidden; }
-.final-cta::before { content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(120,60,200,0.1) 0%,rgba(201,168,76,0.05) 40%,transparent 70%); }
-.final-cta h2 { font-family:'Cormorant Garamond',serif;font-size:clamp(40px,6vw,76px);font-weight:300;line-height:1.05;margin-bottom:18px;position:relative; }
-.final-cta h2 em { font-style:italic;color:var(--gold2); }
-.final-cta p { font-size:17px;color:var(--text2);margin-bottom:44px;position:relative; }
-.final-cta-btns { display:flex;justify-content:center;gap:16px;position:relative; }
+.final-cta { padding:100px 60px; text-align:center; position:relative; overflow:hidden; }
+.final-cta::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at center, rgba(120,60,200,0.1) 0%, rgba(201,168,76,0.06) 40%, transparent 70%); }
+.final-cta h2 { font-family:'Cormorant Garamond',serif; font-size:clamp(44px,6vw,80px); font-weight:300; line-height:1.1; margin-bottom:20px; position:relative; }
+.final-cta h2 em { font-style:italic; color:var(--gold2); }
+.final-cta p { font-size:18px; color:var(--text2); margin-bottom:44px; position:relative; }
+.final-cta-btns { display:flex; justify-content:center; gap:16px; position:relative; flex-wrap:wrap; }
 
 @media(max-width:900px) {
-  .stats-inner,.how-section,.features-inner,.testi-section,.final-cta { padding-left:24px;padding-right:24px; }
-  .steps-grid,.features-grid,.testi-grid { grid-template-columns:1fr; }
-  .stats-inner { grid-template-columns:repeat(2,1fr); }
+  .steps, .feat-grid, .testi-grid { grid-template-columns:1fr; }
+  .how-inner, .features, .chat-preview-inner, .testi, .final-cta { padding:60px 24px; }
 }
 </style>
 </head>
 <body>
 
 <!-- DISCLAIMER -->
-<div class="disclaimer-overlay" id="disc">
+<div class="disclaimer-overlay" id="disclaimerOverlay">
   <div class="disclaimer-box">
     <div class="d-logo">InSight</div>
-    <span class="d-symbol">◈</span>
-    <span class="d-tag">AI-Powered Personal Intelligence</span>
-    <div class="d-title">Before you begin</div>
-    <p class="d-text">InSight is an <strong>AI-powered self-reflection tool</strong>. It is not fortune telling, astrology, or any form of prediction. It uses your personal data to generate thoughtful, personalised insights.</p>
+    <span class="d-symbol">✦</span>
+    <span class="d-tagline">Not guesswork. Real patterns. Your future, clearly.</span>
+    <h2 class="d-title">Before you begin</h2>
+    <p class="d-text">InSight is an <strong>AI-powered personal insight tool</strong>. It is not astrology, fortune telling, or a substitute for professional advice. It uses your birth data to identify patterns and generate personalised reflections.</p>
     <div class="d-warning">
       <ul>
-        <li>All readings are for self-reflection and entertainment only</li>
-        <li>Nothing here is medical, financial, or legal advice</li>
-        <li>Not all content will apply to your situation</li>
-        <li>Do not make major life decisions based solely on InSight</li>
-        <li>If you are in crisis, speak to a qualified professional</li>
+        <li>For self-reflection and entertainment only</li>
+        <li>Not medical, financial, or legal advice</li>
+        <li>Results may not always be accurate or applicable</li>
+        <li>Do not make major life decisions based on InSight alone</li>
+        <li>If you are in crisis, please contact a qualified professional</li>
       </ul>
     </div>
     <label class="d-check">
-      <input type="checkbox" id="agreeCheck" onchange="toggleBtn()" />
-      <span>I understand and agree to the <a href="terms.html" target="_blank">Terms & Conditions</a></span>
+      <input type="checkbox" id="agreeCheck" onchange="toggleAccept()" />
+      <span>I understand and agree to the <a href="terms.html" target="_blank">Terms & Conditions</a>. I know InSight is for personal reflection only.</span>
     </label>
-    <button class="d-btn" id="acceptBtn" disabled onclick="acceptDisc()">I Understand — Enter InSight ✦</button>
-    <button class="d-skip" onclick="window.location.href='https://google.com'">No thanks, take me back</button>
+    <button class="d-accept" id="acceptBtn" disabled onclick="acceptDisclaimer()">I Understand — Enter InSight ✦</button>
+    <button class="d-decline" onclick="window.location.href='https://google.com'">No thanks, take me back</button>
   </div>
 </div>
 
@@ -238,10 +220,11 @@
   </a>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
-    <li><a href="reading.html">Start Chat</a></li>
+    <li><a href="reading.html">Start Chatting</a></li>
     <li><a href="compatibility.html">Compatibility</a></li>
     <li><a href="blog.html">Journal</a></li>
     <li><a href="about.html">About</a></li>
+    <li><a href="terms.html">Terms</a></li>
   </ul>
   <a href="reading.html" class="nav-cta">Begin Now</a>
 </nav>
@@ -251,142 +234,143 @@
   <!-- HERO -->
   <section class="hero">
     <div class="hero-glow"></div>
-    <div class="orbit o1"></div>
-    <div class="orbit o2"></div>
-
     <div class="hero-badge">
-      <div class="badge-dot">◈</div>
-      <span class="badge-txt">AI-Powered Personal Insights · Free to Begin</span>
+      <div class="badge-dot">✦</div>
+      <span class="badge-text">AI-Powered Personal Insights · Free to Begin</span>
     </div>
-
-    <h1>The future<br><em>waits for you.</em></h1>
-    <p class="hero-sub-title">Real clarity. Real answers. Powered by AI.</p>
-    <p class="hero-desc">Enter your details once, then ask InSight anything — about your personality, career, relationships, or what lies ahead. Like ChatGPT, but built around you.</p>
-
-    <div class="hero-btns">
-      <a href="reading.html" class="btn-glow">◈ &nbsp;Start My InSight Chat</a>
-      <a href="about.html" class="btn-ghost">How It Works ↗</a>
-    </div>
-
-    <div class="scroll-hint">
-      <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
-      <span>Explore</span>
+    <h1>Your future,<br><em>clearly.</em></h1>
+    <p class="hero-sub">Enter your birth details once — then ask InSight anything. About your personality, career, relationships, or what lies ahead. Real answers, not guesswork.</p>
+    <div class="hero-cta">
+      <a href="reading.html" class="btn-glow">✦ &nbsp;Start My Free Session</a>
+      <a href="compatibility.html" class="btn-ghost">Relationship Analysis ↗</a>
     </div>
   </section>
 
-  <!-- STATS -->
-  <div class="stats-bar">
-    <div class="stats-inner">
-      <div class="stat-item fade-up"><span class="stat-num">2.4M</span><span class="stat-label">Conversations</span></div>
-      <div class="stat-item fade-up delay-1"><span class="stat-num">98%</span><span class="stat-label">Found It Helpful</span></div>
-      <div class="stat-item fade-up delay-2"><span class="stat-num">150+</span><span class="stat-label">Countries</span></div>
-      <div class="stat-item fade-up delay-3"><span class="stat-num">4.9★</span><span class="stat-label">Average Rating</span></div>
-    </div>
-  </div>
-
   <!-- HOW IT WORKS -->
-  <div class="how-section fade-up">
-    <div class="section-header">
-      <span class="eyebrow">Simple & Fast</span>
-      <h2>How InSight works</h2>
-      <p>No sign-up. No subscriptions. Just answers.</p>
-    </div>
-    <div class="steps-grid">
-      <div class="step-card">
-        <span class="step-num">Step 01</span>
-        <h3>Enter Your Details</h3>
-        <p>Tell InSight your name, date of birth, birth time, and place. This is used to personalise every response specifically to you.</p>
-      </div>
-      <div class="step-card">
-        <span class="step-num">Step 02</span>
-        <h3>Ask Anything</h3>
-        <p>Type your question — about your personality, love life, career, finances, purpose, or what the next year looks like for you.</p>
-      </div>
-      <div class="step-card">
-        <span class="step-num">Step 03</span>
-        <h3>Get Real Answers</h3>
-        <p>InSight responds instantly with personalised, thoughtful insight — and you can keep asking as many questions as you want.</p>
+  <div class="how-section">
+    <div class="how-inner fade-up">
+      <h2>How <em>InSight</em> works</h2>
+      <div class="steps">
+        <div class="step">
+          <span class="step-n">01</span>
+          <h3>Enter Your Details</h3>
+          <p>Your name, date of birth, exact birth time, and place of birth. This is how InSight personalises everything specifically to you.</p>
+        </div>
+        <div class="step">
+          <span class="step-n">02</span>
+          <h3>Ask Anything</h3>
+          <p>Just like ChatGPT — type any question. Career, love, personality, purpose, finances, relationships. No limits on what you can ask.</p>
+        </div>
+        <div class="step">
+          <span class="step-n">03</span>
+          <h3>Get Real Answers</h3>
+          <p>InSight responds with personalised, thoughtful insight based on your specific data. Ask follow-up questions. Keep the conversation going.</p>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- FEATURES -->
-  <div class="features-section">
-    <div class="features-inner fade-up">
-      <div class="section-header">
-        <span class="eyebrow">What You Can Ask</span>
-        <h2>InSight covers everything<br>that matters to you</h2>
+  <div class="features fade-up">
+    <h2>What you can ask InSight</h2>
+    <p>Once you enter your details, nothing is off limits. Here are some things people ask most.</p>
+    <div class="feat-grid">
+      <div class="feat">
+        <span class="feat-icon">◈</span>
+        <h3>Personality</h3>
+        <p>What are my biggest strengths? What holds me back? How do I come across to others? What patterns repeat in my life?</p>
       </div>
-      <div class="features-grid">
-        <div class="feature-card">
-          <span class="feature-icon">◈</span>
-          <h3>Who You Are</h3>
-          <p>Understand your personality, emotional patterns, strengths, and blind spots — with brutal honesty and real depth.</p>
-          <a href="reading.html" class="feature-link">Ask InSight →</a>
+      <div class="feat">
+        <span class="feat-icon">↗</span>
+        <h3>Career & Purpose</h3>
+        <p>Am I on the right path? What career suits me? When is the right time to make a move? What is my life purpose?</p>
+      </div>
+      <div class="feat">
+        <span class="feat-icon">♡</span>
+        <h3>Relationships</h3>
+        <p>Why do I keep attracting the same type of person? What do I need in a partner? How do I handle conflict?</p>
+      </div>
+      <div class="feat">
+        <span class="feat-icon">◎</span>
+        <h3>The Year Ahead</h3>
+        <p>What does the next 12 months look like for me? What opportunities are coming? What challenges should I prepare for?</p>
+      </div>
+      <div class="feat">
+        <span class="feat-icon">⟳</span>
+        <h3>Patterns & Cycles</h3>
+        <p>What cycles keep repeating in my life? What financial patterns should I know about? When is my next major turning point?</p>
+      </div>
+      <div class="feat">
+        <span class="feat-icon">◷</span>
+        <h3>Daily Direction</h3>
+        <p>What energy should I bring to today? What should I focus on this week? What does this period of my life mean?</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAT PREVIEW -->
+  <div class="chat-preview">
+    <div class="chat-preview-inner fade-up">
+      <h2>It works just like ChatGPT</h2>
+      <p>Enter your details once. Then have a real conversation with InSight — ask anything, go as deep as you want.</p>
+      <div class="mock-chat">
+        <div class="mock-chat-header">
+          <div class="mock-avatar">✦</div>
+          <div>
+            <div class="mock-name">InSight</div>
+            <div class="mock-status">Connected · Personalised to you</div>
+          </div>
         </div>
-        <div class="feature-card">
-          <span class="feature-icon">↗</span>
-          <h3>Your Career Path</h3>
-          <p>What work suits you best? Where are you headed professionally? What opportunities are you missing right now?</p>
-          <a href="reading.html" class="feature-link">Ask InSight →</a>
+        <div class="mock-messages">
+          <div class="mock-msg ai">
+            <div class="mock-avatar">✦</div>
+            <div class="mock-bubble">Welcome, Arjun. Based on your birth data from Mumbai on the 14th of March, you have a strong drive for independence balanced with a deep need for meaningful connection. What would you like to explore today?</div>
+          </div>
+          <div class="mock-msg user">
+            <div class="mock-bubble">Am I on the right career path?</div>
+          </div>
+          <div class="mock-msg ai">
+            <div class="mock-avatar">✦</div>
+            <div class="mock-bubble">Looking at your profile, Arjun — you have a natural ability to lead and innovate, but you tend to feel constrained in environments with rigid structure. The tension you are feeling right now is not a sign something is wrong. It is a sign you have outgrown where you are. The next 8 months present a genuine window to redirect...</div>
+          </div>
         </div>
-        <div class="feature-card">
-          <span class="feature-icon">♡</span>
-          <h3>Love & Relationships</h3>
-          <p>How do you love? What patterns do you repeat? What does your current relationship dynamic reveal about you?</p>
-          <a href="reading.html" class="feature-link">Ask InSight →</a>
+        <div class="mock-input">
+          <div class="mock-input-box">Ask InSight anything…</div>
+          <div class="mock-send">↑</div>
         </div>
-        <div class="feature-card">
-          <span class="feature-icon">◎</span>
-          <h3>Life Patterns</h3>
-          <p>What cycles keep repeating in your life — and why? InSight identifies the patterns holding you back or pushing you forward.</p>
-          <a href="reading.html" class="feature-link">Ask InSight →</a>
-        </div>
-        <div class="feature-card">
-          <span class="feature-icon">⟳</span>
-          <h3>What's Ahead</h3>
-          <p>A grounded, honest look at the opportunities and challenges likely coming your way — and how to navigate them.</p>
-          <a href="reading.html" class="feature-link">Ask InSight →</a>
-        </div>
-        <div class="feature-card">
-          <span class="feature-icon">∞</span>
-          <h3>Your Purpose</h3>
-          <p>What are you actually here for? What gives your life direction and meaning? InSight helps you see the bigger picture.</p>
-          <a href="reading.html" class="feature-link">Ask InSight →</a>
-        </div>
+      </div>
+      <div style="text-align:center;margin-top:36px;">
+        <a href="reading.html" class="btn-glow">✦ &nbsp;Start My Session</a>
       </div>
     </div>
   </div>
 
   <!-- TESTIMONIALS -->
-  <div class="testi-section fade-up">
-    <div class="section-header">
-      <span class="eyebrow">Real People. Real Clarity.</span>
-      <h2>What people are saying</h2>
-    </div>
+  <div class="testi fade-up">
+    <h2>What people are saying</h2>
     <div class="testi-grid">
       <div class="testi-card">
-        <div class="stars">★★★★★</div>
-        <p class="testi-text">I asked InSight about my career and it described exactly what I was feeling but couldn't articulate. The accuracy was genuinely unsettling — in the best way.</p>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">The reading described aspects of my personality I have never shared with anyone. It felt like someone finally saw me clearly.</p>
         <div class="testi-author">
-          <div class="testi-avatar">SR</div>
-          <div><div class="testi-name">Sofia R.</div><div class="testi-info">New York · Designer</div></div>
+          <div class="testi-av">SR</div>
+          <div><div class="testi-name">Sofia R.</div><div class="testi-info">New York</div></div>
         </div>
       </div>
       <div class="testi-card">
-        <div class="stars">★★★★★</div>
-        <p class="testi-text">The conversation felt like talking to someone who genuinely knew me. The insight about my relationship patterns was something I'd spent years in therapy trying to understand.</p>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">I was a complete sceptic. The career forecast InSight gave me three months ago has played out almost exactly. Genuinely stunned.</p>
         <div class="testi-author">
-          <div class="testi-avatar">JK</div>
-          <div><div class="testi-name">James K.</div><div class="testi-info">London · Entrepreneur</div></div>
+          <div class="testi-av">JK</div>
+          <div><div class="testi-name">James K.</div><div class="testi-info">London</div></div>
         </div>
       </div>
       <div class="testi-card">
-        <div class="stars">★★★★★</div>
-        <p class="testi-text">I was sceptical. I'm not anymore. InSight told me things about my personality that only people who've known me for years would know. Remarkable tool.</p>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">I asked about my relationship and the response was more insightful than years of trying to figure it out alone. Remarkable tool.</p>
         <div class="testi-author">
-          <div class="testi-avatar">AL</div>
-          <div><div class="testi-name">Aria L.</div><div class="testi-info">Sydney · Architect</div></div>
+          <div class="testi-av">AL</div>
+          <div><div class="testi-name">Aria L.</div><div class="testi-info">Sydney</div></div>
         </div>
       </div>
     </div>
@@ -394,11 +378,11 @@
 
   <!-- FINAL CTA -->
   <div class="final-cta fade-up">
-    <h2>Your answers<br>are <em>one chat away.</em></h2>
-    <p>It takes 60 seconds to start. No account needed.</p>
+    <h2>Your answers<br>are <em>waiting.</em></h2>
+    <p>Takes 60 seconds to set up. Ask as many questions as you want.</p>
     <div class="final-cta-btns">
-      <a href="reading.html" class="btn-glow">◈ &nbsp;Start My Free Chat</a>
-      <a href="about.html" class="btn-ghost">Learn More</a>
+      <a href="reading.html" class="btn-glow">✦ &nbsp;Begin My Free Session</a>
+      <a href="about.html" class="btn-ghost">Learn About InSight</a>
     </div>
   </div>
 
@@ -406,7 +390,7 @@
     <div class="footer-logo">InSight</div>
     <ul class="footer-links">
       <li><a href="index.html">Home</a></li>
-      <li><a href="reading.html">Start Chat</a></li>
+      <li><a href="reading.html">Start Chatting</a></li>
       <li><a href="compatibility.html">Compatibility</a></li>
       <li><a href="blog.html">Journal</a></li>
       <li><a href="about.html">About</a></li>
@@ -419,19 +403,19 @@
 
 <script src="main.js"></script>
 <script>
-function toggleBtn() {
-  const on = document.getElementById('agreeCheck').checked;
+function toggleAccept() {
+  const checked = document.getElementById('agreeCheck').checked;
   const btn = document.getElementById('acceptBtn');
-  btn.disabled = !on;
-  btn.classList.toggle('on', on);
+  btn.disabled = !checked;
+  btn.classList.toggle('on', checked);
 }
-function acceptDisc() {
+function acceptDisclaimer() {
   if (!document.getElementById('agreeCheck').checked) return;
-  sessionStorage.setItem('insight_ok', '1');
-  document.getElementById('disc').classList.add('hidden');
+  sessionStorage.setItem('insight_accepted', 'true');
+  document.getElementById('disclaimerOverlay').style.display = 'none';
 }
-if (sessionStorage.getItem('insight_ok') === '1') {
-  document.getElementById('disc').classList.add('hidden');
+if (sessionStorage.getItem('insight_accepted') === 'true') {
+  document.getElementById('disclaimerOverlay').style.display = 'none';
 }
 </script>
 </body>

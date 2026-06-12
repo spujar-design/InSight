@@ -754,7 +754,9 @@ function generateDemoReply(question) {
     ],
     finances: [
       `On money, ${first} — a common pattern is cycles of being really disciplined for a while, followed by a stretch of impulsive spending, often triggered less by genuine desire and more by stress or a need to feel some sense of control or reward. If that sounds familiar, the shift that actually changes things usually comes from a decision made in a calm moment — choosing in advance how you'll handle stress spending — rather than waiting for circumstances to force a change after the fact.`,
-      `${first}, a useful distinction when it comes to money is the difference between scarcity and discipline. Scarcity-driven habits come from fear — saving because you're anxious, avoiding spending because you feel like you don't deserve to. Discipline-driven habits come from intention — saving because it serves a goal you actually care about. Both can look similar from the outside, but they feel very different from the inside, and only one of them is sustainable long-term.`
+      `${first}, a useful distinction when it comes to money is the difference between scarcity and discipline. Scarcity-driven habits come from fear — saving because you're anxious, avoiding spending because you feel like you don't deserve to. Discipline-driven habits come from intention — saving because it serves a goal you actually care about. Both can look similar from the outside, but they feel very different from the inside, and only one of them is sustainable long-term.`,
+      `When it comes to building wealth, ${first}, the biggest factor usually isn't a single big decision — it's the accumulation of small, repeated ones. People often delay getting started because they're waiting to feel like they have "enough" to begin properly, but that threshold tends to move further away the longer you wait. The patterns that build wealth over time are almost always boring and consistent rather than dramatic. If something feels stuck financially, it's worth checking whether you're waiting for the "right moment" to start something that could just as easily start small, today.`,
+      `${first}, one thing worth examining honestly is your relationship with risk when it comes to money. Some people avoid all risk because the fear of loss outweighs any potential gain, even when the odds are actually in their favour. Others swing the other way and take on risk impulsively, often as a reaction to feeling behind. Neither extreme tends to serve you well long-term. The middle ground — calculated, deliberate risk based on actual numbers rather than emotion — is usually where real progress happens, but it's also the hardest one to stick to consistently.`
     ],
     default: [
       `That's a good question, ${first}. Honestly, this is something only you can fully see from the inside — but here's a pattern worth considering: a lot of the time, people already know the answer to questions like this. What they're really looking for isn't information, it's permission to act on what they already suspect. So before you reason your way through every angle — what does your gut say, right now, before you start second-guessing it?`,
@@ -765,13 +767,13 @@ function generateDemoReply(question) {
   };
 
   let category = 'default';
-  if (q.includes('strength') && q.includes('blind')) category = 'strengths';
-  else if (q.includes('career') || q.includes('job') || q.includes('work') || q.includes('path')) category = 'career';
-  else if (q.includes('love') || q.includes('relationship') || q.includes('partner') || q.includes('conflict')) category = 'love';
-  else if (q.includes('year') || q.includes('future') || q.includes('ahead') || q.includes('coming')) category = 'future';
-  else if (q.includes('purpose') || q.includes('meant to') || q.includes('right path')) category = 'purpose';
-  else if (q.includes('financ') || q.includes('money')) category = 'finances';
-  else if (q.includes('personality') || q.includes('who am i')) category = 'personality';
+  if ((q.includes('strength') && q.includes('weak')) || (q.includes('strength') && q.includes('blind')) || q.includes('good at') || q.includes('bad at')) category = 'strengths';
+  else if (q.includes('financ') || q.includes('money') || q.includes('wealth') || q.includes('rich') || q.includes('income') || q.includes('save') || q.includes('saving') || q.includes('spend') || q.includes('debt') || q.includes('invest')) category = 'finances';
+  else if (q.includes('love') || q.includes('relationship') || q.includes('partner') || q.includes('conflict') || q.includes('marriage') || q.includes('dating') || q.includes('crush') || q.includes('breakup') || q.includes('ex ')) category = 'love';
+  else if (q.includes('purpose') || q.includes('meant to') || q.includes('right path') || q.includes('meaning') || q.includes('why am i')) category = 'purpose';
+  else if (q.includes('career') || q.includes('job') || q.includes('work') || q.includes('promotion') || q.includes('business') || q.includes('profession')) category = 'career';
+  else if (q.includes('year') || q.includes('future') || q.includes('ahead') || q.includes('coming') || q.includes('next month') || q.includes('upcoming') || q.includes('forecast')) category = 'future';
+  else if (q.includes('personality') || q.includes('who am i') || q.includes('about me') || q.includes('myself') || q.includes('character')) category = 'personality';
 
   const options = bank[category] || bank.default;
 

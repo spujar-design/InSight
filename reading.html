@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>InSight — Your Personal Guide</title>
+<title>InSight — Your Personal Guide (Demo)</title>
 <link rel="stylesheet" href="style.css" />
 <style>
 
@@ -587,7 +587,7 @@ body { overflow: hidden; height: 100vh; }
           <div class="chat-header-avatar">✦</div>
           <div class="chat-header-info">
             <h4>InSight Guide</h4>
-            <span>Connected · Personalised to you</span>
+            <span>Demo Mode · Personalised to you</span>
           </div>
         </div>
         <div class="chat-header-right" id="sessionInfo"></div>
@@ -685,40 +685,13 @@ function startChat() {
 
 async function addWelcomeFromAI(name, zodiac, dob, place) {
   showTyping();
-  const prompt = buildSystemPrompt() + `\n\nGreet ${name} warmly and confidently. Mention their ${zodiac.sign} profile and that they were born in ${place}. Tell them InSight is here to give them real, honest perspective on their personality, relationships, career, and future — and that they can ask anything. Keep it sharp, warm, and forward-looking. Under 60 words. No mystical language. No asterisks.`;
-  const text = await callAI([{ role: 'user', content: prompt }]);
+  await sleep(900);
   hideTyping();
+  const text = `Welcome, ${name.split(' ')[0]}. Looking at your profile — born ${dob} in ${place}, ${zodiac.sign} — there's a lot here worth exploring. I'm here to give you real, honest perspective on your personality, relationships, career, and what's ahead. Ask me anything, and let's get into it.`;
   addMessage('assistant', text);
 }
 
-function buildSystemPrompt() {
-  const { name, dob, time, place, gender, zodiac } = userProfile;
-  const dobFormatted = new Date(dob).toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
-  return `You are InSight — a sharp, intelligent AI that helps people understand themselves and their future clearly. You are not an astrology app. You are not a fortune teller. You use birth data as a personalised input to generate meaningful, grounded insights about a person's personality, behavioural patterns, relationships, and life direction.
-
-Think of yourself as a brilliant, honest friend who happens to have deep knowledge of human psychology and behavioural patterns. You speak plainly, directly, and intelligently. No mystical language. No vague fluff. Real talk.
-
-User profile:
-- Name: ${name}
-- Date of birth: ${dobFormatted}
-- Birth time: ${time || 'unknown'}
-- Place of birth: ${place}
-- Birth sign: ${zodiac.sign}
-- Gender: ${gender || 'not specified'}
-
-How to respond:
-- Use the user's first name naturally — keep it personal and direct
-- Reference their birth data and sign as relevant context, not as mystical prophecy
-- Be honest, warm, and grounded — like a smart friend giving real perspective
-- Give specific, personalised answers — never generic filler
-- Do NOT use words like: cosmos, celestial, ancient wisdom, mystical, oracle, arcane, stars speak, heavens, divination, or any similar language
-- DO use words like: pattern, tendency, strength, future, clarity, direction, potential, opportunity, challenge, growth
-- Do NOT predict specific future events with certainty — frame things as likely patterns and tendencies
-- Do NOT give medical, financial, or legal advice
-- If someone seems in crisis, gently point them to professional support
-- Keep responses to 3–4 focused paragraphs
-- No asterisks, bullet points, or markdown — write in clean flowing prose`;
-}
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 async function sendMessage() {
   const input = document.getElementById('chatInput');
@@ -733,32 +706,62 @@ async function sendMessage() {
   showTyping();
   document.getElementById('sendBtn').disabled = true;
 
-  const messages = [
-    { role: 'user', content: buildSystemPrompt() + '\n\nConversation so far:\n' + conversationHistory.slice(0, -1).map(m => `${m.role === 'user' ? userProfile.name : 'InSight'}: ${m.content}`).join('\n') + `\n\n${userProfile.name}: ${text}\n\nInSight:` }
-  ];
-
-  const reply = await callAI(messages);
+  await sleep(1100 + Math.random() * 900);
+  const reply = generateDemoReply(text);
   hideTyping();
   addMessage('assistant', reply);
   conversationHistory.push({ role: 'assistant', content: reply });
   document.getElementById('sendBtn').disabled = false;
 }
 
-async function callAI(messages) {
-  try {
-    const res = await fetch('/.netlify/functions/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages })
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      return 'Error: ' + (data.error || 'Something went wrong');
-    }
-    return data.text || 'No response received.';
-  } catch(e) {
-    return 'Connection error: ' + e.message;
-  }
+function generateDemoReply(question) {
+  const { name, zodiac, place } = userProfile;
+  const first = name.split(' ')[0];
+  const q = question.toLowerCase();
+
+  const bank = {
+    personality: [
+      `${first}, your ${zodiac.sign} placement points to someone who thinks several steps ahead, but who can also get caught second-guessing decisions that already felt right. The strength is your range — you adapt fast and read situations well. The pattern worth watching is how often you delay action while you wait to feel "certain enough." Certainty rarely arrives before the decision does. It tends to show up after, once you've already moved.`,
+      `One thing that stands out for ${first} is the gap between how capable you actually are and how capable you feel in the moment. People with your profile often underestimate their own consistency because they focus on the days that felt hard rather than the broader trend. The pattern tends to be: you're more reliable than your internal narrative gives you credit for.`
+    ],
+    career: [
+      `${first}, born in ${place} with a ${zodiac.sign} profile, you likely do well in environments that give you autonomy but also some structure to push against — total freedom can actually slow you down, while total rigidity frustrates you. If something at work has felt "off" lately, it's probably less about the work itself and more about whether you have enough room to do it your way. The next few months look like a window where a shift — even a small one — could open up more than you'd expect.`,
+      `Career-wise, the tendency for someone with your profile is to outgrow roles faster than the role itself changes. That mismatch creates restlessness that can look like burnout but is often closer to boredom wearing a different mask. If you've been feeling that lately, it's worth asking whether the issue is the work, or whether you've simply absorbed everything this particular role can teach you.`
+    ],
+    love: [
+      `${first}, in relationships your ${zodiac.sign} side tends to give a lot early on — almost as a way of testing whether the other person will match that energy. When they don't, it can read as disappointment rather than what it actually is: a mismatch in pace. The pattern worth noticing is whether you're choosing people based on potential rather than what's actually in front of you right now.`,
+      `Right now, the theme in your relationships is likely less about finding the right person and more about recognising your own patterns when things get close. Do you pull back when things go well, or lean in harder when things get uncertain? Either tendency is workable — but only once you can see it happening in real time.`
+    ],
+    future: [
+      `Looking ahead, the next 6 to 12 months for ${first} look like a period of quiet recalibration rather than dramatic change. ${zodiac.sign} profiles often experience this as a "nothing is happening" phase that actually sets up the next major shift. The opportunity here is to use this time deliberately — to build the foundation for something, rather than waiting for something to happen to you.`,
+      `The pattern for the coming period suggests a choice point is approaching — something that's been simmering will likely come to a head. It won't necessarily be dramatic, but it will be clarifying. The direction you take from here has more influence on the next few years than it might seem in the moment.`
+    ],
+    strengths: [
+      `${first}'s biggest strength is adaptability — the ability to read a room, a situation, or a person quickly and adjust without losing your own sense of direction. The blind spot that often comes with this is conflict avoidance dressed up as flexibility. Sometimes "going with the flow" is really "avoiding the conversation that needs to happen."`,
+    ],
+    purpose: [
+      `Questions about purpose tend to feel bigger than they need to be. For someone with your ${zodiac.sign} profile, purpose isn't usually one singular "thing" — it's closer to a direction you keep returning to, even when you take detours. Look at what you keep coming back to, even after periods of doing something else. That's usually closer to the answer than any single job title or goal.`,
+    ],
+    finances: [
+      `Financially, the pattern for ${first}'s profile often involves cycles of disciplined saving followed by periods of impulsive spending — usually triggered by stress rather than genuine desire. The next financial shift tends to come from a decision rather than an event: choosing to change a habit before circumstances force the change.`,
+    ],
+    default: [
+      `That's a good question, ${first}. Based on your ${zodiac.sign} profile and the patterns that tend to come with it, the honest answer is that this is something only you can fully see from the inside — but the tendency for people with your profile is to know the answer already and to be looking for permission to act on it. What does your gut say, before you start reasoning your way out of it?`,
+      `${first}, looking at this through the lens of your profile — the pattern that tends to show up here is overthinking something that's actually fairly simple, because the stakes feel high. Try answering this as if you were advising a friend in the exact same situation. The advice you'd give them is usually the advice you need.`
+    ]
+  };
+
+  let category = 'default';
+  if (q.includes('personality') || q.includes('strength') && q.includes('blind')) category = 'strengths';
+  else if (q.includes('career') || q.includes('job') || q.includes('work') || q.includes('path')) category = 'career';
+  else if (q.includes('love') || q.includes('relationship') || q.includes('partner') || q.includes('conflict')) category = 'love';
+  else if (q.includes('year') || q.includes('future') || q.includes('ahead') || q.includes('coming')) category = 'future';
+  else if (q.includes('purpose') || q.includes('meant to') || q.includes('right path')) category = 'purpose';
+  else if (q.includes('financ') || q.includes('money')) category = 'finances';
+  else if (q.includes('personality') || q.includes('who am i')) category = 'personality';
+
+  const options = bank[category] || bank.default;
+  return options[Math.floor(Math.random() * options.length)];
 }
 
 function addMessage(role, text) {

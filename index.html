@@ -74,19 +74,20 @@
   width: 700px; height: 700px;
   margin: -350px 0 0 -350px;
   border-radius: 50%;
-  border: 1px solid rgba(201, 168, 76, 0.10);
+  border: 1px solid rgba(201, 168, 76, 0.18);
   animation: orbitSpin 60s linear infinite;
   pointer-events: none;
+  z-index: 1;
 }
 .orbit-ring::before {
   content: '';
   position: absolute;
-  width: 8px; height: 8px;
+  width: 10px; height: 10px;
   background: var(--gold);
   border-radius: 50%;
-  top: -4px; left: 50%;
-  margin-left: -4px;
-  box-shadow: 0 0 12px var(--gold), 0 0 24px rgba(201,168,76,0.4);
+  top: -5px; left: 50%;
+  margin-left: -5px;
+  box-shadow: 0 0 16px var(--gold), 0 0 30px rgba(201,168,76,0.6);
 }
 .orbit-ring-2 {
   position: absolute;
@@ -94,23 +95,25 @@
   width: 520px; height: 520px;
   margin: -260px 0 0 -260px;
   border-radius: 50%;
-  border: 1px solid rgba(0, 212, 180, 0.07);
+  border: 1px solid rgba(0, 212, 180, 0.14);
   animation: orbitSpin 40s linear infinite reverse;
   pointer-events: none;
+  z-index: 1;
 }
 .orbit-ring-2::before {
   content: '';
   position: absolute;
-  width: 5px; height: 5px;
+  width: 7px; height: 7px;
   background: var(--teal);
   border-radius: 50%;
-  bottom: -3px; left: 50%;
-  margin-left: -2px;
-  box-shadow: 0 0 10px var(--teal);
+  bottom: -4px; left: 50%;
+  margin-left: -3px;
+  box-shadow: 0 0 14px var(--teal), 0 0 24px rgba(0,212,180,0.5);
 }
-@keyframes orbitSpin { to { transform: rotate(360deg); } }
+@keyframes orbitSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 .hero-badge {
+  position: relative; z-index: 2;
   display:inline-flex; align-items:center; gap:10px;
   background:rgba(201,168,76,0.08); border:1px solid rgba(201,168,76,0.2);
   border-radius:100px; padding:8px 20px 8px 10px;
@@ -122,6 +125,7 @@
 .badge-text { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.12em; color:var(--gold2); text-transform:uppercase; }
 
 .hero h1 {
+  position: relative; z-index: 2;
   font-family:'Cormorant Garamond',serif;
   font-size: clamp(60px, 9vw, 120px);
   font-weight:300; line-height:1.25; letter-spacing:-0.02em;
@@ -131,12 +135,14 @@
 .hero h1 em { font-style:italic; color:var(--gold2); text-shadow:0 0 60px rgba(201,168,76,0.25); }
 
 .hero-sub {
+  position: relative; z-index: 2;
   font-size:18px; color:var(--text2); max-width:540px;
   line-height:1.75; margin:0 auto 48px;
   animation: fadeUp 0.9s 0.35s both;
 }
 
 .hero-cta {
+  position: relative; z-index: 2;
   display:flex; align-items:center; justify-content:center; gap:16px; flex-wrap:wrap;
   animation: fadeUp 0.9s 0.5s both;
 }

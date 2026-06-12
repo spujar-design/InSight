@@ -663,14 +663,14 @@ function startChat() {
 
   // Update sidebar
   document.getElementById('profileName').textContent = name;
-  document.getElementById('profileSign').textContent = zodiac.symbol;
+  document.getElementById('profileSign').textContent = '✦';
   document.getElementById('profileDetails').innerHTML =
-    `${zodiac.sign}<br>${new Date(dob).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}${time?'<br>'+time:''}<br>${place}`;
+    `${new Date(dob).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}${time?'<br>'+time:''}<br>${place}`;
   document.getElementById('profileCard').classList.add('visible');
 
   // Update header
   document.getElementById('welcomeGreeting').textContent = `Welcome, ${name.split(' ')[0]}`;
-  document.getElementById('sessionInfo').innerHTML = `${zodiac.symbol} ${zodiac.sign}<br>${place}`;
+  document.getElementById('sessionInfo').innerHTML = `${place}`;
 
   // Show chat
   document.getElementById('onboarding').classList.add('hidden');
@@ -687,7 +687,7 @@ async function addWelcomeFromAI(name, zodiac, dob, place) {
   showTyping();
   await sleep(900);
   hideTyping();
-  const text = `Welcome, ${name.split(' ')[0]}. Looking at your profile — born ${dob} in ${place}, ${zodiac.sign} — there's a lot here worth exploring. I'm here to give you real, honest perspective on your personality, relationships, career, and what's ahead. Ask me anything, and let's get into it.`;
+  const text = `Welcome, ${name.split(' ')[0]}. I've looked at your details — born ${dob} in ${place} — and there's a lot we can dig into. I'm here to give you a clear, honest perspective on your personality, your relationships, your career, and where things might be heading. Ask me anything, big or small, and we'll work through it together.`;
   addMessage('assistant', text);
 }
 
@@ -715,44 +715,44 @@ async function sendMessage() {
 }
 
 function generateDemoReply(question) {
-  const { name, zodiac, place } = userProfile;
+  const { name } = userProfile;
   const first = name.split(' ')[0];
   const q = question.toLowerCase();
 
   const bank = {
     personality: [
-      `${first}, your ${zodiac.sign} placement points to someone who thinks several steps ahead, but who can also get caught second-guessing decisions that already felt right. The strength is your range — you adapt fast and read situations well. The pattern worth watching is how often you delay action while you wait to feel "certain enough." Certainty rarely arrives before the decision does. It tends to show up after, once you've already moved.`,
-      `One thing that stands out for ${first} is the gap between how capable you actually are and how capable you feel in the moment. People with your profile often underestimate their own consistency because they focus on the days that felt hard rather than the broader trend. The pattern tends to be: you're more reliable than your internal narrative gives you credit for.`
+      `Here's what I notice about you, ${first}. You tend to think several steps ahead before you act — which is a real strength, because it means you rarely walk into situations unprepared. But that same habit has a flip side: once you've made a decision, you can still find yourself second-guessing it afterwards, even when it was the right call. The feeling of being "completely sure" almost never arrives before you act. It usually shows up afterwards, once you can see how things played out. So if you're waiting to feel certain before you move, you might be waiting for something that only appears after the fact.`,
+      `Something worth pointing out, ${first}, is the gap between how capable you actually are and how capable you feel on any given day. Most people in your situation judge themselves by their hardest days — the ones where things felt slow, messy, or uncertain — and forget to weigh that against all the days things went fine. If you zoomed out and looked at your last six months as a whole, the picture would likely look a lot more consistent and competent than it feels when you're in the middle of it. You're probably more reliable than the story you tell yourself about yourself.`
     ],
     career: [
-      `${first}, born in ${place} with a ${zodiac.sign} profile, you likely do well in environments that give you autonomy but also some structure to push against — total freedom can actually slow you down, while total rigidity frustrates you. If something at work has felt "off" lately, it's probably less about the work itself and more about whether you have enough room to do it your way. The next few months look like a window where a shift — even a small one — could open up more than you'd expect.`,
-      `Career-wise, the tendency for someone with your profile is to outgrow roles faster than the role itself changes. That mismatch creates restlessness that can look like burnout but is often closer to boredom wearing a different mask. If you've been feeling that lately, it's worth asking whether the issue is the work, or whether you've simply absorbed everything this particular role can teach you.`
+      `Let's talk about work, ${first}. From what you've described, it sounds like you do best in situations that give you some freedom to operate in your own way, but still have enough structure that you're not left completely directionless. Too much freedom can actually make you less productive — without any boundaries, it's hard to know where to focus. But too much rigidity frustrates you fast. If something at your current job has felt "off" lately, there's a good chance it's not the work itself that's the problem — it's whether you have enough room to do that work your way. The next few months look like a good window to push for a change, even a small one, like more flexibility, a new project, or a different way of working. Small changes right now could open doors that feel disproportionately bigger later.`,
+      `Here's a pattern that's worth sitting with, ${first}: a lot of people outgrow their role faster than the role itself evolves. That mismatch often shows up as something that feels like burnout, but is actually closer to boredom — you've learned what this version of the job has to teach you, and now it's just repetition. If that's resonating, it's worth asking yourself honestly: is the problem the work, or is it that you've already absorbed everything this particular role can give you? Those two things call for very different solutions — one is about fixing what you have, the other is about moving on to something that can stretch you again.`
     ],
     love: [
-      `${first}, in relationships your ${zodiac.sign} side tends to give a lot early on — almost as a way of testing whether the other person will match that energy. When they don't, it can read as disappointment rather than what it actually is: a mismatch in pace. The pattern worth noticing is whether you're choosing people based on potential rather than what's actually in front of you right now.`,
-      `Right now, the theme in your relationships is likely less about finding the right person and more about recognising your own patterns when things get close. Do you pull back when things go well, or lean in harder when things get uncertain? Either tendency is workable — but only once you can see it happening in real time.`
+      `On relationships, ${first} — here's something to consider. Early on, you probably give a lot, sometimes almost as a way of testing whether the other person will match that energy back. When they don't match it right away, it can feel like rejection or disappointment, but it's often something simpler: a difference in pace. Some people warm up slowly. That doesn't necessarily mean less interest, just a different rhythm. The thing worth noticing is whether you're drawn to people for who they actually are right now, or for who you can picture them becoming. Those are very different things, and mixing them up is one of the most common reasons relationships feel harder than they need to.`,
+      `Right now, the more useful question in your relationships probably isn't "is this the right person" — it's "what do I do when things start to feel close." Some people pull back right when things are going well, almost out of instinct, as if closeness itself feels risky. Others lean in harder exactly when things get uncertain, trying to fix the uncertainty by getting closer faster. Neither of these is a flaw — they're just patterns. But noticing which one you tend toward, in the moment it's happening, is the first step to actually having a choice about it instead of just reacting.`
     ],
     future: [
-      `Looking ahead, the next 6 to 12 months for ${first} look like a period of quiet recalibration rather than dramatic change. ${zodiac.sign} profiles often experience this as a "nothing is happening" phase that actually sets up the next major shift. The opportunity here is to use this time deliberately — to build the foundation for something, rather than waiting for something to happen to you.`,
-      `The pattern for the coming period suggests a choice point is approaching — something that's been simmering will likely come to a head. It won't necessarily be dramatic, but it will be clarifying. The direction you take from here has more influence on the next few years than it might seem in the moment.`
+      `Looking ahead, ${first}, the next several months look less like a period of big dramatic change and more like a quiet stretch of recalibration. That can feel frustrating if you're hoping for something to "happen" — but periods like this are often where the groundwork gets laid for whatever comes next. The opportunity here is to use this time on purpose: build a skill, repair a relationship, get your finances in order, whatever feels most relevant — rather than waiting around for something external to shift first.`,
+      `There's a decision point that seems to be approaching for you, ${first} — something that's been building quietly for a while and is likely to come to a head soon. It probably won't be dramatic when it arrives, but it will be clarifying. Whatever direction you take from there is likely to have more influence on the next few years than it might seem like it should, given how ordinary the moment itself may feel.`
     ],
     strengths: [
-      `${first}'s biggest strength is adaptability — the ability to read a room, a situation, or a person quickly and adjust without losing your own sense of direction. The blind spot that often comes with this is conflict avoidance dressed up as flexibility. Sometimes "going with the flow" is really "avoiding the conversation that needs to happen."`,
+      `Your biggest strength, ${first}, is how quickly you read situations — a room, a conversation, a person's mood — and adjust without losing your own sense of direction. That's genuinely rare. The blind spot that tends to come with it is that this flexibility can sometimes be a polite way of avoiding conflict. "Going with the flow" is sometimes really "avoiding the conversation that actually needs to happen." Worth asking yourself: are there a few conversations you've been putting off because it's easier to adapt around them than to have them directly?`,
     ],
     purpose: [
-      `Questions about purpose tend to feel bigger than they need to be. For someone with your ${zodiac.sign} profile, purpose isn't usually one singular "thing" — it's closer to a direction you keep returning to, even when you take detours. Look at what you keep coming back to, even after periods of doing something else. That's usually closer to the answer than any single job title or goal.`,
+      `Questions about purpose tend to feel bigger and more abstract than they need to be, ${first}. In practice, purpose usually isn't one single "thing" you're meant to do — it's more like a direction you keep returning to, even after detours, even after periods where you were doing something completely different. A useful exercise: look back at the last several years and notice what keeps showing up again and again, in different forms. That recurring thread is usually a much better answer than any single job title or grand mission statement.`,
     ],
     finances: [
-      `Financially, the pattern for ${first}'s profile often involves cycles of disciplined saving followed by periods of impulsive spending — usually triggered by stress rather than genuine desire. The next financial shift tends to come from a decision rather than an event: choosing to change a habit before circumstances force the change.`,
+      `On money, ${first} — a common pattern is cycles of being really disciplined for a while, followed by a stretch of impulsive spending, often triggered less by genuine desire and more by stress or a need to feel some sense of control or reward. If that sounds familiar, the shift that actually changes things usually comes from a decision made in a calm moment — choosing in advance how you'll handle stress spending — rather than waiting for circumstances to force a change after the fact.`,
     ],
     default: [
-      `That's a good question, ${first}. Based on your ${zodiac.sign} profile and the patterns that tend to come with it, the honest answer is that this is something only you can fully see from the inside — but the tendency for people with your profile is to know the answer already and to be looking for permission to act on it. What does your gut say, before you start reasoning your way out of it?`,
-      `${first}, looking at this through the lens of your profile — the pattern that tends to show up here is overthinking something that's actually fairly simple, because the stakes feel high. Try answering this as if you were advising a friend in the exact same situation. The advice you'd give them is usually the advice you need.`
+      `That's a good question, ${first}. Honestly, this is something only you can fully see from the inside — but here's a pattern worth considering: a lot of the time, people already know the answer to questions like this. What they're really looking for isn't information, it's permission to act on what they already suspect. So before you reason your way through every angle — what does your gut say, right now, before you start second-guessing it?`,
+      `${first}, here's a way to think about this: the pattern that tends to show up with questions like yours is overthinking something that's actually fairly simple, because the stakes feel high. A useful trick — imagine a close friend came to you with the exact same situation, word for word. What would you tell them? People are almost always more decisive and clear-headed when the situation belongs to someone else. The advice you'd give them is usually the advice you need.`
     ]
   };
 
   let category = 'default';
-  if (q.includes('personality') || q.includes('strength') && q.includes('blind')) category = 'strengths';
+  if (q.includes('strength') && q.includes('blind')) category = 'strengths';
   else if (q.includes('career') || q.includes('job') || q.includes('work') || q.includes('path')) category = 'career';
   else if (q.includes('love') || q.includes('relationship') || q.includes('partner') || q.includes('conflict')) category = 'love';
   else if (q.includes('year') || q.includes('future') || q.includes('ahead') || q.includes('coming')) category = 'future';

@@ -142,6 +142,52 @@ body { overflow: hidden; height: 100vh; }
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  position: relative;
+}
+
+/* Ambient glow layer behind chat */
+.chat-ambient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.chat-ambient::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  top: 10%; right: -200px;
+  background: radial-gradient(circle, rgba(120,60,200,0.10) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: ambientDrift1 22s ease-in-out infinite;
+}
+.chat-ambient::after {
+  content: '';
+  position: absolute;
+  width: 500px; height: 500px;
+  bottom: 5%; left: -150px;
+  background: radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: ambientDrift2 28s ease-in-out infinite;
+}
+@keyframes ambientDrift1 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+  50% { transform: translate(-60px, 40px) scale(1.15); opacity: 1; }
+}
+@keyframes ambientDrift2 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+  50% { transform: translate(50px, -30px) scale(1.1); opacity: 0.9; }
+}
+
+/* Thinking state intensifies ambient glow */
+.chat-main.thinking .chat-ambient::before {
+  animation-duration: 6s;
+  filter: brightness(1.5);
+}
+.chat-main.thinking .chat-ambient::after {
+  animation-duration: 8s;
+  filter: brightness(1.4);
 }
 
 /* Onboarding form (step 1) */
@@ -152,6 +198,8 @@ body { overflow: hidden; height: 100vh; }
   justify-content: center;
   padding: 40px;
   overflow-y: auto;
+  position: relative;
+  z-index: 1;
 }
 .onboarding.hidden { display: none; }
 
@@ -236,6 +284,8 @@ body { overflow: hidden; height: 100vh; }
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  position: relative;
+  z-index: 1;
 }
 .chat-interface.visible { display: flex; }
 
@@ -308,7 +358,12 @@ body { overflow: hidden; height: 100vh; }
   display: flex;
   gap: 14px;
   max-width: 85%;
-  animation: fadeUp 0.4s forwards;
+  animation: msgEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+@keyframes msgEnter {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 .msg.user { flex-direction: row-reverse; align-self: flex-end; }
 .msg.assistant { align-self: flex-start; }
@@ -321,11 +376,20 @@ body { overflow: hidden; height: 100vh; }
   font-family: 'Cormorant Garamond', serif;
   font-size: 16px;
   margin-top: 2px;
+  transition: box-shadow 0.3s;
 }
 .msg.assistant .msg-avatar {
   background: rgba(201,168,76,0.1);
   border: 1px solid var(--border);
   color: var(--gold2);
+  box-shadow: 0 0 0 rgba(201,168,76,0);
+}
+.typing-indicator .msg-avatar {
+  animation: avatarPulse 1.6s ease-in-out infinite;
+}
+@keyframes avatarPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.25); }
+  50% { box-shadow: 0 0 14px 4px rgba(201,168,76,0.35); }
 }
 .msg.user .msg-avatar {
   background: rgba(120,60,200,0.15);
@@ -340,6 +404,7 @@ body { overflow: hidden; height: 100vh; }
   padding: 16px 20px;
   line-height: 1.75;
   font-size: 15px;
+  transition: border-color 0.3s, background 0.3s;
 }
 .msg.assistant .msg-bubble {
   background: rgba(13,11,26,0.8);
@@ -349,6 +414,10 @@ body { overflow: hidden; height: 100vh; }
   font-size: 17px;
   font-weight: 300;
   border-left: 2px solid rgba(201,168,76,0.3);
+}
+.msg.assistant.just-arrived .msg-bubble {
+  border-left-color: rgba(201,168,76,0.7);
+  background: rgba(201,168,76,0.04);
 }
 .msg.user .msg-bubble {
   background: rgba(120,60,200,0.12);
@@ -406,9 +475,13 @@ body { overflow: hidden; height: 100vh; }
   background: rgba(255,255,255,0.03);
   border: 1px solid var(--border);
   padding: 12px 16px;
-  transition: border-color 0.2s;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 .chat-input-wrap:focus-within { border-color: rgba(201,168,76,0.4); }
+.chat-main.thinking .chat-input-wrap {
+  border-color: rgba(201,168,76,0.25);
+  box-shadow: 0 0 0 1px rgba(201,168,76,0.05), 0 0 20px rgba(201,168,76,0.06);
+}
 
 #chatInput {
   flex: 1;
@@ -536,7 +609,8 @@ body { overflow: hidden; height: 100vh; }
   </aside>
 
   <!-- ░░ MAIN ░░ -->
-  <main class="chat-main">
+  <main class="chat-main" id="chatMain">
+    <div class="chat-ambient"></div>
 
     <!-- STEP 1: Onboarding -->
     <div class="onboarding" id="onboarding">
@@ -788,7 +862,23 @@ function generateDemoReply(question) {
   const chosen = available[choiceIndex];
   usedReplies[category].add(options.indexOf(chosen));
 
-  return chosen;
+  // Occasionally add a follow-up question to deepen the conversation
+  const followUps = {
+    personality: [`Is there a specific situation recently where this showed up for you, ${first}?`, `Does that feel accurate, or does something about it not quite fit?`],
+    career: [`What's the actual thing that's been nagging at you about work lately, ${first}?`, `If you imagined yourself a year from now in this same role, how would that feel?`],
+    love: [`Has this come up in your current relationship, or is this more about a pattern you've noticed over time?`, `When you think back, does this pattern show up with one specific person, or across the board?`],
+    future: [`Is there something specific on the horizon that's been on your mind, ${first}?`, `What would "moving forward" actually look like for you right now, practically speaking?`],
+    purpose: [`What's something you keep coming back to, even when life pulls you in other directions?`, `Is there a version of this question that feels more specific to where you are right now?`],
+    finances: [`Is this more about a specific decision you're facing, or a pattern over time?`, `What would change first if money weren't a factor at all?`],
+    strengths: [`Does that conflict-avoidance pattern feel familiar in a specific relationship right now?`],
+    default: [`Want to go a bit deeper into any part of that?`, `Does that land, or does something about your situation feel different?`]
+  };
+
+  const followUpBank = followUps[category] || followUps.default;
+  const shouldFollowUp = Math.random() < 0.45;
+  const followUp = shouldFollowUp ? `\n\n${followUpBank[Math.floor(Math.random() * followUpBank.length)]}` : '';
+
+  return chosen + followUp;
 }
 
 function addMessage(role, text) {
@@ -796,8 +886,12 @@ function addMessage(role, text) {
   const now = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   const initials = userProfile ? userProfile.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : 'U';
 
+  // Remove "just-arrived" highlight from previous messages
+  document.querySelectorAll('.msg.just-arrived').forEach(el => el.classList.remove('just-arrived'));
+
   const div = document.createElement('div');
   div.className = `msg ${role}`;
+  if (role === 'assistant') div.classList.add('just-arrived');
   div.innerHTML = `
     <div class="msg-avatar">${role === 'assistant' ? '✦' : initials}</div>
     <div>
@@ -807,10 +901,15 @@ function addMessage(role, text) {
   `;
   messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight;
+
+  if (role === 'assistant') {
+    setTimeout(() => div.classList.remove('just-arrived'), 2200);
+  }
 }
 
 function showTyping() {
   isTyping = true;
+  document.getElementById('chatMain').classList.add('thinking');
   const messages = document.getElementById('messages');
   const div = document.createElement('div');
   div.className = 'msg assistant typing-indicator';
@@ -827,6 +926,7 @@ function showTyping() {
 
 function hideTyping() {
   isTyping = false;
+  document.getElementById('chatMain').classList.remove('thinking');
   const el = document.getElementById('typingIndicator');
   if (el) el.remove();
 }

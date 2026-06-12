@@ -496,7 +496,6 @@ body { overflow: hidden; height: 100vh; }
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
     <li><a href="reading.html">Get Reading</a></li>
-    <li><a href="horoscope.html">Horoscope</a></li>
     <li><a href="compatibility.html">Compatibility</a></li>
     <li><a href="blog.html">Journal</a></li>
     <li><a href="about.html">About</a></li>
@@ -618,6 +617,7 @@ body { overflow: hidden; height: 100vh; }
 let userProfile = null;
 let conversationHistory = [];
 let isTyping = false;
+let usedReplies = {};
 
 const ZODIAC = [
   { sign:'Capricorn', symbol:'♑', from:[12,22], to:[1,19] },
@@ -722,32 +722,45 @@ function generateDemoReply(question) {
   const bank = {
     personality: [
       `Here's what I notice about you, ${first}. You tend to think several steps ahead before you act — which is a real strength, because it means you rarely walk into situations unprepared. But that same habit has a flip side: once you've made a decision, you can still find yourself second-guessing it afterwards, even when it was the right call. The feeling of being "completely sure" almost never arrives before you act. It usually shows up afterwards, once you can see how things played out. So if you're waiting to feel certain before you move, you might be waiting for something that only appears after the fact.`,
-      `Something worth pointing out, ${first}, is the gap between how capable you actually are and how capable you feel on any given day. Most people in your situation judge themselves by their hardest days — the ones where things felt slow, messy, or uncertain — and forget to weigh that against all the days things went fine. If you zoomed out and looked at your last six months as a whole, the picture would likely look a lot more consistent and competent than it feels when you're in the middle of it. You're probably more reliable than the story you tell yourself about yourself.`
+      `Something worth pointing out, ${first}, is the gap between how capable you actually are and how capable you feel on any given day. Most people in your situation judge themselves by their hardest days — the ones where things felt slow, messy, or uncertain — and forget to weigh that against all the days things went fine. If you zoomed out and looked at your last six months as a whole, the picture would likely look a lot more consistent and competent than it feels when you're in the middle of it. You're probably more reliable than the story you tell yourself about yourself.`,
+      `One pattern that stands out, ${first}, is how much you notice — about people, about situations, about shifts in mood or tone that others miss completely. That's a real asset. But it can also mean you spend a lot of energy processing things that other people never even register, which can be quietly exhausting without you realising why. It's worth occasionally asking: is this something I actually need to act on, or is it just something I noticed? Not everything you pick up on requires a response.`,
+      `Something that comes up a lot for people like you, ${first}, is the tendency to hold yourself to a standard you'd never expect from anyone else. You'd tell a friend that one bad day doesn't define them, that mistakes are normal, that progress isn't linear — but you don't always extend yourself the same grace. The honest question is: what would change if you treated yourself with the same patience you give other people?`
     ],
     career: [
       `Let's talk about work, ${first}. From what you've described, it sounds like you do best in situations that give you some freedom to operate in your own way, but still have enough structure that you're not left completely directionless. Too much freedom can actually make you less productive — without any boundaries, it's hard to know where to focus. But too much rigidity frustrates you fast. If something at your current job has felt "off" lately, there's a good chance it's not the work itself that's the problem — it's whether you have enough room to do that work your way. The next few months look like a good window to push for a change, even a small one, like more flexibility, a new project, or a different way of working. Small changes right now could open doors that feel disproportionately bigger later.`,
-      `Here's a pattern that's worth sitting with, ${first}: a lot of people outgrow their role faster than the role itself evolves. That mismatch often shows up as something that feels like burnout, but is actually closer to boredom — you've learned what this version of the job has to teach you, and now it's just repetition. If that's resonating, it's worth asking yourself honestly: is the problem the work, or is it that you've already absorbed everything this particular role can give you? Those two things call for very different solutions — one is about fixing what you have, the other is about moving on to something that can stretch you again.`
+      `Here's a pattern that's worth sitting with, ${first}: a lot of people outgrow their role faster than the role itself evolves. That mismatch often shows up as something that feels like burnout, but is actually closer to boredom — you've learned what this version of the job has to teach you, and now it's just repetition. If that's resonating, it's worth asking yourself honestly: is the problem the work, or is it that you've already absorbed everything this particular role can give you? Those two things call for very different solutions — one is about fixing what you have, the other is about moving on to something that can stretch you again.`,
+      `When it comes to career direction, ${first}, there's often a difference between what looks impressive on paper and what actually makes the day-to-day enjoyable. People sometimes chase the former because it's easier to explain to other people, while quietly knowing the latter matters more to them personally. If you've been weighing two paths and one keeps winning "on paper" while the other keeps pulling at your attention anyway — that pull is data, not distraction.`,
+      `One thing worth considering, ${first}, is how you respond to recognition versus how you respond to genuine challenge. Some people are driven primarily by being seen and acknowledged; others are driven by the problem itself, regardless of who notices. Neither is wrong, but they lead to very different career choices. If you've felt unfulfilled despite external success, it might be because the work has stopped being genuinely challenging — even if it still looks good from the outside.`
     ],
     love: [
       `On relationships, ${first} — here's something to consider. Early on, you probably give a lot, sometimes almost as a way of testing whether the other person will match that energy back. When they don't match it right away, it can feel like rejection or disappointment, but it's often something simpler: a difference in pace. Some people warm up slowly. That doesn't necessarily mean less interest, just a different rhythm. The thing worth noticing is whether you're drawn to people for who they actually are right now, or for who you can picture them becoming. Those are very different things, and mixing them up is one of the most common reasons relationships feel harder than they need to.`,
-      `Right now, the more useful question in your relationships probably isn't "is this the right person" — it's "what do I do when things start to feel close." Some people pull back right when things are going well, almost out of instinct, as if closeness itself feels risky. Others lean in harder exactly when things get uncertain, trying to fix the uncertainty by getting closer faster. Neither of these is a flaw — they're just patterns. But noticing which one you tend toward, in the moment it's happening, is the first step to actually having a choice about it instead of just reacting.`
+      `Right now, the more useful question in your relationships probably isn't "is this the right person" — it's "what do I do when things start to feel close." Some people pull back right when things are going well, almost out of instinct, as if closeness itself feels risky. Others lean in harder exactly when things get uncertain, trying to fix the uncertainty by getting closer faster. Neither of these is a flaw — they're just patterns. But noticing which one you tend toward, in the moment it's happening, is the first step to actually having a choice about it instead of just reacting.`,
+      `Something worth examining, ${first}, is how you handle the moment after a disagreement — not the disagreement itself, but what happens right after. Do you need space immediately, or do you need reassurance immediately? People often assume their partner needs the same thing they do in that moment, and when that assumption is wrong, small disagreements turn into bigger ones, not because of the original issue, but because of how the aftermath was handled.`,
+      `In relationships, ${first}, there's often a quiet tension between wanting to be fully known by someone and being afraid of what happens if they actually see all of you. That tension can show up as holding back just enough to feel safe — even with people you trust. The irony is that the closeness you're looking for usually requires exactly the vulnerability that feels riskiest. Worth asking: in your closest relationship right now, is there a part of yourself you haven't shown yet, and why not?`
     ],
     future: [
       `Looking ahead, ${first}, the next several months look less like a period of big dramatic change and more like a quiet stretch of recalibration. That can feel frustrating if you're hoping for something to "happen" — but periods like this are often where the groundwork gets laid for whatever comes next. The opportunity here is to use this time on purpose: build a skill, repair a relationship, get your finances in order, whatever feels most relevant — rather than waiting around for something external to shift first.`,
-      `There's a decision point that seems to be approaching for you, ${first} — something that's been building quietly for a while and is likely to come to a head soon. It probably won't be dramatic when it arrives, but it will be clarifying. Whatever direction you take from there is likely to have more influence on the next few years than it might seem like it should, given how ordinary the moment itself may feel.`
+      `There's a decision point that seems to be approaching for you, ${first} — something that's been building quietly for a while and is likely to come to a head soon. It probably won't be dramatic when it arrives, but it will be clarifying. Whatever direction you take from there is likely to have more influence on the next few years than it might seem like it should, given how ordinary the moment itself may feel.`,
+      `When you think about the year ahead, ${first}, it's worth separating what you're hoping happens from what you're actually willing to do something about. A lot of plans stay stuck not because the timing is wrong, but because the first real step feels disproportionately small compared to the size of the goal. Often the move that actually unlocks things is almost embarrassingly simple — a message you haven't sent, a conversation you've been avoiding, an application you've been "about to" submit for weeks.`,
+      `Something to keep an eye on for the coming months, ${first}, is the difference between things that need patience and things that need action — and how easy it is to mix the two up. Patience applied to something that actually needs action just becomes avoidance. Action applied to something that needs patience just creates friction. If something has felt stuck, it might be worth asking which category it actually falls into.`
     ],
     strengths: [
       `Your biggest strength, ${first}, is how quickly you read situations — a room, a conversation, a person's mood — and adjust without losing your own sense of direction. That's genuinely rare. The blind spot that tends to come with it is that this flexibility can sometimes be a polite way of avoiding conflict. "Going with the flow" is sometimes really "avoiding the conversation that actually needs to happen." Worth asking yourself: are there a few conversations you've been putting off because it's easier to adapt around them than to have them directly?`,
+      `${first}, one of your clearest strengths is consistency — you show up, again and again, even when things aren't exciting. People notice that, even if they don't always say it. The blind spot that often pairs with this is that you can become so used to being the reliable one that you stop asking for support yourself, because it feels like that's not your role. It is, though. Reliability doesn't mean you don't also need things from other people.`
     ],
     purpose: [
       `Questions about purpose tend to feel bigger and more abstract than they need to be, ${first}. In practice, purpose usually isn't one single "thing" you're meant to do — it's more like a direction you keep returning to, even after detours, even after periods where you were doing something completely different. A useful exercise: look back at the last several years and notice what keeps showing up again and again, in different forms. That recurring thread is usually a much better answer than any single job title or grand mission statement.`,
+      `${first}, a lot of the pressure around "purpose" comes from treating it as something you either have or don't — like a switch that's either on or off. In reality, it's closer to something you build through the choices you make repeatedly over time, not something you discover fully formed in a single moment of clarity. If you're waiting for a single defining realisation, you might be waiting for the wrong kind of evidence. The smaller, repeated choices are usually where it actually shows up.`
     ],
     finances: [
       `On money, ${first} — a common pattern is cycles of being really disciplined for a while, followed by a stretch of impulsive spending, often triggered less by genuine desire and more by stress or a need to feel some sense of control or reward. If that sounds familiar, the shift that actually changes things usually comes from a decision made in a calm moment — choosing in advance how you'll handle stress spending — rather than waiting for circumstances to force a change after the fact.`,
+      `${first}, a useful distinction when it comes to money is the difference between scarcity and discipline. Scarcity-driven habits come from fear — saving because you're anxious, avoiding spending because you feel like you don't deserve to. Discipline-driven habits come from intention — saving because it serves a goal you actually care about. Both can look similar from the outside, but they feel very different from the inside, and only one of them is sustainable long-term.`
     ],
     default: [
       `That's a good question, ${first}. Honestly, this is something only you can fully see from the inside — but here's a pattern worth considering: a lot of the time, people already know the answer to questions like this. What they're really looking for isn't information, it's permission to act on what they already suspect. So before you reason your way through every angle — what does your gut say, right now, before you start second-guessing it?`,
-      `${first}, here's a way to think about this: the pattern that tends to show up with questions like yours is overthinking something that's actually fairly simple, because the stakes feel high. A useful trick — imagine a close friend came to you with the exact same situation, word for word. What would you tell them? People are almost always more decisive and clear-headed when the situation belongs to someone else. The advice you'd give them is usually the advice you need.`
+      `${first}, here's a way to think about this: the pattern that tends to show up with questions like yours is overthinking something that's actually fairly simple, because the stakes feel high. A useful trick — imagine a close friend came to you with the exact same situation, word for word. What would you tell them? People are almost always more decisive and clear-headed when the situation belongs to someone else. The advice you'd give them is usually the advice you need.`,
+      `Worth sitting with this one, ${first}. Often when something feels genuinely hard to figure out, it's not because the answer is complicated — it's because part of you already knows the answer, and another part of you doesn't want it to be true. If that resonates at all here, the more honest question might not be "what should I do" but "what am I avoiding admitting to myself."`,
+      `${first}, one thing that might help here is separating the decision itself from the fear of how others will react to it. A lot of the weight we feel around choices isn't really about the choice — it's about anticipating disappointment, judgment, or having to explain ourselves. If you strip that part away entirely, and it was just about you and the situation, would the answer feel any different?`
     ]
   };
 
@@ -761,7 +774,19 @@ function generateDemoReply(question) {
   else if (q.includes('personality') || q.includes('who am i')) category = 'personality';
 
   const options = bank[category] || bank.default;
-  return options[Math.floor(Math.random() * options.length)];
+
+  // Avoid repeating a response already used in this category this session
+  if (!usedReplies[category]) usedReplies[category] = new Set();
+  let available = options.filter((_, i) => !usedReplies[category].has(i));
+  if (available.length === 0) {
+    usedReplies[category].clear();
+    available = options;
+  }
+  const choiceIndex = Math.floor(Math.random() * available.length);
+  const chosen = available[choiceIndex];
+  usedReplies[category].add(options.indexOf(chosen));
+
+  return chosen;
 }
 
 function addMessage(role, text) {
@@ -824,6 +849,7 @@ function autoResize(el) {
 
 function resetChat() {
   conversationHistory = [];
+  usedReplies = {};
   const messages = document.getElementById('messages');
   messages.innerHTML = `
     <div class="welcome-msg">

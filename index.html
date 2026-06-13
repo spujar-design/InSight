@@ -17,7 +17,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  animation: portalFadeOut 0.9s 2.6s ease forwards;
+  animation: portalFadeOut 0.6s 3.8s ease forwards;
 }
 .portal-intro.done { pointer-events: none; }
 
@@ -53,7 +53,7 @@
   position: absolute;
   width: 100vw; height: 100vh;
   background: radial-gradient(circle at center, rgba(201,168,76,0.18) 0%, rgba(120,60,200,0.10) 35%, transparent 70%);
-  animation: portalGlowPulse 2.6s ease-in-out infinite;
+  animation: portalGlowPulse 1.8s ease-in-out infinite;
 }
 @keyframes portalGlowPulse {
   0%, 100% { opacity: 0.6; transform: scale(0.9); }
@@ -66,7 +66,7 @@
   width: 140px; height: 140px;
   border: 1px solid rgba(201,168,76,0.3);
   border-radius: 50%;
-  animation: portalRingExpand 2.6s ease-out forwards;
+  animation: portalRingExpand 1.8s ease-out forwards;
 }
 .portal-ring-loader::before, .portal-ring-loader::after {
   content: '';
@@ -74,7 +74,7 @@
   inset: 0;
   border-radius: 50%;
   border: 1px solid rgba(0,212,180,0.2);
-  animation: portalRingExpand 2.6s 0.3s ease-out forwards;
+  animation: portalRingExpand 1.8s 0.2s ease-out forwards;
 }
 .portal-ring-loader::after {
   border-color: rgba(180,160,255,0.18);
@@ -87,12 +87,53 @@
 
 /* Content: logo mark + text */
 .portal-content {
-  position: relative;
+  position: absolute;
   z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 24px;
+}
+
+.portal-slide-1 {
+  opacity: 1;
+  animation: portalSlide1Out 0.5s 1.6s ease forwards;
+}
+@keyframes portalSlide1Out {
+  to { opacity: 0; transform: translateY(-20px) scale(0.96); filter: blur(6px); }
+}
+
+.portal-slide-2 {
+  opacity: 0;
+  animation: portalSlide2In 0.7s 1.85s ease forwards;
+}
+@keyframes portalSlide2In {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); filter: blur(6px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+.portal-slide2-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 32px;
+  font-weight: 300;
+  color: var(--text);
+  text-align: center;
+  line-height: 1.5;
+  text-shadow: 0 0 30px rgba(201,168,76,0.2);
+}
+.portal-dots span {
+  display: inline-block;
+  opacity: 0;
+  animation: portalDotBlink 1.2s infinite;
+  color: var(--gold2);
+}
+.portal-dots span:nth-child(1) { animation-delay: 0s; }
+.portal-dots span:nth-child(2) { animation-delay: 0.2s; }
+.portal-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes portalDotBlink {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
 }
 
 .portal-mark {
@@ -105,7 +146,7 @@
   border: 1px solid var(--gold);
   transform: rotate(45deg);
   position: relative;
-  animation: portalMarkSpin 2.6s ease forwards;
+  animation: portalMarkSpin 1.6s ease forwards;
   box-shadow: 0 0 30px rgba(201,168,76,0.4);
 }
 .portal-mark-diamond::after {
@@ -173,7 +214,7 @@
   inset: 0;
   background: #03020a;
   clip-path: circle(0% at 50% 50%);
-  animation: portalWipeOut 1s 1.9s cubic-bezier(0.7,0,0.3,1) forwards;
+  animation: portalWipeOut 0.7s 3.2s cubic-bezier(0.7,0,0.3,1) forwards;
   z-index: 3;
 }
 @keyframes portalWipeOut {
@@ -190,7 +231,7 @@ body.portal-active { overflow: hidden; height: 100vh; }
   backdrop-filter: blur(20px);
   display: flex; align-items: center; justify-content: center; padding: 24px;
   opacity: 0;
-  animation: disclaimerFadeIn 0.6s 3.4s ease forwards;
+  animation: disclaimerFadeIn 0.6s 4.0s ease forwards;
 }
 .disclaimer-overlay.hidden { display: none; }
 @keyframes disclaimerFadeIn { to { opacity: 1; } }
@@ -494,7 +535,7 @@ body.portal-active { overflow: hidden; height: 100vh; }
   <div class="portal-grid"></div>
   <div class="portal-glow"></div>
   <div class="portal-ring-loader"></div>
-  <div class="portal-content">
+  <div class="portal-content portal-slide-1">
     <div class="portal-mark">
       <div class="portal-mark-diamond"></div>
     </div>
@@ -502,6 +543,9 @@ body.portal-active { overflow: hidden; height: 100vh; }
       <span class="portal-letter">I</span><span class="portal-letter">n</span><span class="portal-letter">S</span><span class="portal-letter">i</span><span class="portal-letter">g</span><span class="portal-letter">h</span><span class="portal-letter">t</span>
     </div>
     <div class="portal-tagline">Entering the future</div>
+  </div>
+  <div class="portal-content portal-slide-2">
+    <div class="portal-slide2-text">Let's see what your future<br>looks like<span class="portal-dots"><span>.</span><span>.</span><span>.</span></span></div>
   </div>
   <div class="portal-wipe"></div>
 </div>
@@ -760,10 +804,10 @@ if (hasSeenPortal && portalIntro) {
   setTimeout(() => {
     document.body.classList.remove('portal-active');
     portalIntro.classList.add('done');
-  }, 3500);
+  }, 3300);
   setTimeout(() => {
     portalIntro.remove();
-  }, 3600);
+  }, 4400);
 }
 
 // Rising particles in hero

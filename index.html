@@ -17,7 +17,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  animation: portalFadeOut 0.6s 3.8s ease forwards;
+  animation: portalFadeOut 0.7s 5.9s ease forwards;
 }
 .portal-intro.done { pointer-events: none; }
 
@@ -53,7 +53,7 @@
   position: absolute;
   width: 100vw; height: 100vh;
   background: radial-gradient(circle at center, rgba(201,168,76,0.18) 0%, rgba(120,60,200,0.10) 35%, transparent 70%);
-  animation: portalGlowPulse 1.8s ease-in-out infinite;
+  animation: portalGlowPulse 3s ease-in-out infinite;
 }
 @keyframes portalGlowPulse {
   0%, 100% { opacity: 0.6; transform: scale(0.9); }
@@ -66,7 +66,7 @@
   width: 140px; height: 140px;
   border: 1px solid rgba(201,168,76,0.3);
   border-radius: 50%;
-  animation: portalRingExpand 1.8s ease-out forwards;
+  animation: portalRingExpand 5.2s ease-out forwards;
 }
 .portal-ring-loader::before, .portal-ring-loader::after {
   content: '';
@@ -74,11 +74,11 @@
   inset: 0;
   border-radius: 50%;
   border: 1px solid rgba(0,212,180,0.2);
-  animation: portalRingExpand 1.8s 0.2s ease-out forwards;
+  animation: portalRingExpand 5.2s 0.4s ease-out forwards;
 }
 .portal-ring-loader::after {
   border-color: rgba(180,160,255,0.18);
-  animation-delay: 0.6s;
+  animation-delay: 0.8s;
 }
 @keyframes portalRingExpand {
   0% { transform: scale(0.3); opacity: 1; border-width: 2px; }
@@ -97,7 +97,7 @@
 
 .portal-slide-1 {
   opacity: 1;
-  animation: portalSlide1Out 0.5s 1.6s ease forwards;
+  animation: portalSlide1Out 0.6s 2.0s ease forwards;
 }
 @keyframes portalSlide1Out {
   to { opacity: 0; transform: translateY(-20px) scale(0.96); filter: blur(6px); }
@@ -105,7 +105,7 @@
 
 .portal-slide-2 {
   opacity: 0;
-  animation: portalSlide2In 0.7s 1.85s ease forwards;
+  animation: portalSlide2In 0.8s 2.4s ease forwards;
 }
 @keyframes portalSlide2In {
   from { opacity: 0; transform: translateY(20px) scale(0.96); filter: blur(6px); }
@@ -214,7 +214,7 @@
   inset: 0;
   background: #03020a;
   clip-path: circle(0% at 50% 50%);
-  animation: portalWipeOut 0.7s 3.2s cubic-bezier(0.7,0,0.3,1) forwards;
+  animation: portalWipeOut 0.9s 5.2s cubic-bezier(0.7,0,0.3,1) forwards;
   z-index: 3;
 }
 @keyframes portalWipeOut {
@@ -231,7 +231,7 @@ body.portal-active { overflow: hidden; height: 100vh; }
   backdrop-filter: blur(20px);
   display: flex; align-items: center; justify-content: center; padding: 24px;
   opacity: 0;
-  animation: disclaimerFadeIn 0.6s 4.0s ease forwards;
+  animation: disclaimerFadeIn 0.6s 6.1s ease forwards;
 }
 .disclaimer-overlay.hidden { display: none; }
 @keyframes disclaimerFadeIn { to { opacity: 1; } }
@@ -804,10 +804,10 @@ if (hasSeenPortal && portalIntro) {
   setTimeout(() => {
     document.body.classList.remove('portal-active');
     portalIntro.classList.add('done');
-  }, 3300);
+  }, 5000);
   setTimeout(() => {
     portalIntro.remove();
-  }, 4400);
+  }, 6100);
 }
 
 // Rising particles in hero

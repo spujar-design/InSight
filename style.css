@@ -2,8 +2,8 @@
 
 :root {
   --bg: #03020a;
-  --bg2: #07050f;
-  --bg3: #0d0b1a;
+  --bg2: rgba(7,5,15,0.55);
+  --bg3: rgba(13,11,26,0.6);
   --gold: #c9a84c;
   --gold2: #e8c97a;
   --gold-dim: rgba(201,168,76,0.15);
@@ -20,13 +20,32 @@
 
 html { scroll-behavior: smooth; }
 
+/* Solid base layer so text stays readable while sections above are translucent */
+html::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: -2;
+}
+
 body {
   font-family: 'Rajdhani', sans-serif;
-  background: var(--bg);
+  background: transparent;
   color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
   cursor: none;
+  position: relative;
+}
+
+/* Make all major background-bearing elements translucent + blurred so ambient effects show through */
+.feature-card, .feat, .step, .how-section, .chat-preview, .testi-section,
+.testi-card, .testimonial, .mock-chat, .compat-section, .blog-card,
+.blog-featured, .blog-side-item, .value-card, .team-card, .step-card,
+.lucky-row, .horo-card, .result-section, .terms-section, .mission,
+section[class*="section"], div[class*="-section"] {
+  backdrop-filter: blur(6px);
 }
 
 /* Custom cursor */

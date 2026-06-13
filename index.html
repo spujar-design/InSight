@@ -60,13 +60,36 @@
   align-items: center; justify-content: center;
   text-align: center; padding: 100px 40px 60px;
   position: relative; overflow: hidden;
+  animation: heroZoomIn 1.4s ease-out both;
+}
+@keyframes heroZoomIn {
+  from { transform: scale(1.06); opacity: 0.6; }
+  to { transform: scale(1); opacity: 1; }
 }
 .hero-glow {
   position:absolute; inset:0; pointer-events:none;
-  background: radial-gradient(ellipse at 50% 40%, rgba(120,60,200,0.15) 0%, rgba(201,168,76,0.08) 40%, transparent 70%);
+  background: radial-gradient(ellipse at 50% 40%, rgba(120,60,200,0.18) 0%, rgba(201,168,76,0.10) 40%, transparent 70%);
   animation: glowPulse 8s ease-in-out infinite;
 }
-@keyframes glowPulse { 0%,100%{opacity:0.7;} 50%{opacity:1;} }
+@keyframes glowPulse { 0%,100%{opacity:0.7; transform:scale(1);} 50%{opacity:1; transform:scale(1.05);} }
+
+/* Central pulsing core */
+.hero-core {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 6px; height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--gold2);
+  box-shadow: 0 0 20px var(--gold2), 0 0 60px rgba(201,168,76,0.5), 0 0 120px rgba(201,168,76,0.2);
+  animation: corePulse 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+@keyframes corePulse {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(2.2); opacity: 1; }
+}
 
 .orbit-ring {
   position: absolute;
@@ -110,7 +133,50 @@
   margin-left: -3px;
   box-shadow: 0 0 14px var(--teal), 0 0 24px rgba(0,212,180,0.5);
 }
+.orbit-ring-3 {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 900px; height: 900px;
+  margin: -450px 0 0 -450px;
+  border-radius: 50%;
+  border: 1px dashed rgba(180,160,255,0.10);
+  animation: orbitSpin 90s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+.orbit-ring-3::before {
+  content: '';
+  position: absolute;
+  width: 6px; height: 6px;
+  background: rgba(180,160,255,0.9);
+  border-radius: 50%;
+  top: 50%; right: -3px;
+  margin-top: -3px;
+  box-shadow: 0 0 12px rgba(180,160,255,0.7), 0 0 24px rgba(180,160,255,0.3);
+}
 @keyframes orbitSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* Floating particles rising up through hero */
+.hero-particles {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+.hero-particle {
+  position: absolute;
+  bottom: -40px;
+  font-family: 'Cormorant Garamond', serif;
+  color: rgba(201,168,76,0.25);
+  animation: particleRise linear infinite;
+  user-select: none;
+}
+@keyframes particleRise {
+  0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.3; }
+  100% { transform: translateY(-110vh) translateX(var(--drift, 30px)) rotate(180deg); opacity: 0; }
+}
 
 .hero-badge {
   position: relative; z-index: 2;
@@ -132,7 +198,20 @@
   margin-bottom:28px;
   animation: fadeUp 0.9s 0.2s both;
 }
-.hero h1 em { font-style:italic; color:var(--gold2); text-shadow:0 0 60px rgba(201,168,76,0.25); }
+.hero h1 em {
+  font-style:italic;
+  background: linear-gradient(90deg, var(--gold2), #fff5d6, var(--gold2), var(--gold));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 60px rgba(201,168,76,0.25);
+  animation: shimmerText 6s linear infinite;
+}
+@keyframes shimmerText {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
 
 .hero-sub {
   position: relative; z-index: 2;
@@ -282,8 +361,11 @@
   <!-- HERO -->
   <section class="hero">
     <div class="hero-glow"></div>
+    <div class="hero-core"></div>
     <div class="orbit-ring"></div>
     <div class="orbit-ring-2"></div>
+    <div class="orbit-ring-3"></div>
+    <div class="hero-particles" id="heroParticles"></div>
     <div class="hero-badge">
       <div class="badge-dot">✦</div>
       <span class="badge-text">AI-Powered Personal Insights · Free to Begin</span>
@@ -466,6 +548,24 @@ function acceptDisclaimer() {
 }
 if (sessionStorage.getItem('insight_accepted') === 'true') {
   document.getElementById('disclaimerOverlay').style.display = 'none';
+}
+
+// Rising particles in hero
+const particleContainer = document.getElementById('heroParticles');
+if (particleContainer) {
+  const symbols = ['✦', '✧', '◆', '·', '✦', '◇', '·'];
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement('div');
+    p.className = 'hero-particle';
+    p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    const size = Math.random() * 16 + 8;
+    const left = Math.random() * 100;
+    const duration = Math.random() * 14 + 10;
+    const delay = Math.random() * 14;
+    const drift = (Math.random() - 0.5) * 120;
+    p.style.cssText = `left:${left}%; font-size:${size}px; animation-duration:${duration}s; animation-delay:-${delay}s; --drift:${drift}px;`;
+    particleContainer.appendChild(p);
+  }
 }
 </script>
 </body>

@@ -190,6 +190,131 @@ body { overflow: hidden; height: 100vh; }
   filter: brightness(1.4);
 }
 
+/* ══════════ SCANNING OVERLAY ══════════ */
+.scan-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(3,2,10,0.97);
+  overflow: hidden;
+}
+.scan-overlay.active {
+  display: flex;
+  animation: scanFadeIn 0.5s ease forwards;
+}
+.scan-overlay.fading-out {
+  animation: scanFadeOut 0.7s ease forwards;
+}
+@keyframes scanFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scanFadeOut { to { opacity: 0; visibility: hidden; } }
+
+.scan-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(201,168,76,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,168,76,0.08) 1px, transparent 1px);
+  background-size: 50px 50px;
+  opacity: 0;
+  animation: scanGridFade 1s 0.2s ease forwards, scanGridMove 8s linear infinite;
+}
+@keyframes scanGridFade { to { opacity: 0.5; } }
+@keyframes scanGridMove {
+  from { background-position: 0 0; }
+  to { background-position: 50px 50px; }
+}
+
+.scan-glow {
+  position: absolute;
+  width: 100%; height: 100%;
+  background: radial-gradient(circle at center, rgba(201,168,76,0.14) 0%, rgba(120,60,200,0.08) 35%, transparent 70%);
+  animation: scanGlowPulse 3.5s ease-in-out infinite;
+}
+@keyframes scanGlowPulse {
+  0%, 100% { opacity: 0.6; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+
+.scan-ring {
+  position: absolute;
+  width: 280px; height: 280px;
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 50%;
+  animation: scanRingPulse 2.4s ease-in-out infinite;
+}
+.scan-ring-2 {
+  width: 380px; height: 380px;
+  border-color: rgba(0,212,180,0.18);
+  animation: scanRingPulse 2.4s 0.6s ease-in-out infinite;
+}
+@keyframes scanRingPulse {
+  0%, 100% { transform: scale(0.9); opacity: 0.4; }
+  50% { transform: scale(1.05); opacity: 0.9; }
+}
+
+.scan-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  max-width: 480px;
+  padding: 40px;
+  text-align: center;
+}
+
+.scan-icon {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 40px;
+  color: var(--gold2);
+  text-shadow: 0 0 30px rgba(201,168,76,0.5);
+  animation: scanIconSpin 3s ease-in-out infinite;
+  margin-bottom: 8px;
+}
+@keyframes scanIconSpin {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.2); }
+}
+
+.scan-line {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.6s ease, transform 0.6s ease, color 0.4s ease;
+}
+.scan-line.active {
+  opacity: 1;
+  transform: translateY(0);
+  color: var(--gold2);
+}
+.scan-line.done {
+  opacity: 0.5;
+  color: var(--text2);
+}
+
+.scan-bar {
+  width: 220px;
+  height: 2px;
+  background: rgba(255,255,255,0.06);
+  margin-top: 12px;
+  overflow: hidden;
+  position: relative;
+}
+.scan-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold), var(--gold2));
+  box-shadow: 0 0 10px rgba(201,168,76,0.6);
+  transition: width 0.4s ease;
+}
+
 /* Onboarding form (step 1) */
 .onboarding {
   flex: 1;
@@ -612,6 +737,21 @@ body { overflow: hidden; height: 100vh; }
   <main class="chat-main" id="chatMain">
     <div class="chat-ambient"></div>
 
+    <!-- SCANNING OVERLAY -->
+    <div class="scan-overlay" id="scanOverlay">
+      <div class="scan-grid"></div>
+      <div class="scan-glow"></div>
+      <div class="scan-ring"></div>
+      <div class="scan-ring scan-ring-2"></div>
+      <div class="scan-content">
+        <div class="scan-icon">✦</div>
+        <div class="scan-line" id="scanLine1">Locating your position in time and space</div>
+        <div class="scan-line" id="scanLine2">Mapping your personal patterns</div>
+        <div class="scan-line" id="scanLine3">Calibrating what comes next</div>
+        <div class="scan-bar"><div class="scan-bar-fill" id="scanBarFill"></div></div>
+      </div>
+    </div>
+
     <!-- STEP 1: Onboarding -->
     <div class="onboarding" id="onboarding">
       <div class="onboard-card fade-up">
@@ -746,15 +886,55 @@ function startChat() {
   document.getElementById('welcomeGreeting').textContent = `Welcome, ${name.split(' ')[0]}`;
   document.getElementById('sessionInfo').innerHTML = `${place}`;
 
-  // Show chat
+  // Hide onboarding, show scan overlay
   document.getElementById('onboarding').classList.add('hidden');
   document.getElementById('chatInterface').classList.add('visible');
+  runScanSequence(name, zodiac, dob, place);
+}
+
+async function runScanSequence(name, zodiac, dob, place) {
+  const overlay = document.getElementById('scanOverlay');
+  const line1 = document.getElementById('scanLine1');
+  const line2 = document.getElementById('scanLine2');
+  const line3 = document.getElementById('scanLine3');
+  const bar = document.getElementById('scanBarFill');
+  const first = name.split(' ')[0];
+
+  // Personalize the lines
+  line1.textContent = `Locating ${first} in time and space — ${place}`;
+  line2.textContent = `Mapping personal patterns from ${new Date(dob).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}`;
+  line3.textContent = `Calibrating what tomorrow looks like for you`;
+
+  overlay.classList.add('active');
+
+  await sleep(400);
+  line1.classList.add('active');
+  bar.style.width = '30%';
+
+  await sleep(1300);
+  line1.classList.remove('active');
+  line1.classList.add('done');
+  line2.classList.add('active');
+  bar.style.width = '65%';
+
+  await sleep(1300);
+  line2.classList.remove('active');
+  line2.classList.add('done');
+  line3.classList.add('active');
+  bar.style.width = '100%';
+
+  await sleep(1300);
+
+  overlay.classList.add('fading-out');
+  await sleep(700);
+  overlay.classList.remove('active', 'fading-out');
+  // reset for potential reuse
+  [line1, line2, line3].forEach(l => l.classList.remove('active','done'));
+  bar.style.width = '0%';
 
   // Send welcome message from InSight
-  setTimeout(() => {
-    const dobFormatted = new Date(dob).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-    addWelcomeFromAI(name, zodiac, dobFormatted, place);
-  }, 600);
+  const dobFormatted = new Date(dob).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  addWelcomeFromAI(name, zodiac, dobFormatted, place);
 }
 
 async function addWelcomeFromAI(name, zodiac, dob, place) {

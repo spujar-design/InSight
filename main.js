@@ -102,7 +102,7 @@ function createAmbientOrbs() {
       position:absolute;
       width:${cfg.size}px; height:${cfg.size}px;
       top:${cfg.top}; left:${cfg.left};
-      background: radial-gradient(circle, rgba(${cfg.color},0.06) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(${cfg.color},0.16) 0%, transparent 70%);
       border-radius:50%;
       animation: ambientOrbFloat${i % 2} ${cfg.dur} ease-in-out infinite;
       animation-delay: ${i * 2}s;

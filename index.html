@@ -17,7 +17,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  animation: portalFadeOut 0.7s 5.9s ease forwards;
+  animation: portalFadeOut 1s 7.6s ease forwards;
 }
 .portal-intro.done { pointer-events: none; }
 
@@ -38,7 +38,7 @@
   top: 55%;
   height: 100%;
   opacity: 0;
-  animation: gridFadeIn 1.5s 0.2s ease forwards, gridDrift 6s linear infinite;
+  animation: gridFadeIn 2.5s 0.2s ease forwards, gridDrift 14s linear infinite;
 }
 @keyframes gridFadeIn {
   to { opacity: 0.5; }
@@ -53,7 +53,7 @@
   position: absolute;
   width: 100vw; height: 100vh;
   background: radial-gradient(circle at center, rgba(201,168,76,0.18) 0%, rgba(120,60,200,0.10) 35%, transparent 70%);
-  animation: portalGlowPulse 3s ease-in-out infinite;
+  animation: portalGlowPulse 5s ease-in-out infinite;
 }
 @keyframes portalGlowPulse {
   0%, 100% { opacity: 0.6; transform: scale(0.9); }
@@ -97,7 +97,7 @@
 
 .portal-slide-1 {
   opacity: 1;
-  animation: portalSlide1Out 0.6s 2.0s ease forwards;
+  animation: portalSlide1Out 1.2s 2.6s cubic-bezier(0.4,0,0.2,1) forwards;
 }
 @keyframes portalSlide1Out {
   to { opacity: 0; transform: translateY(-20px) scale(0.96); filter: blur(6px); }
@@ -105,7 +105,7 @@
 
 .portal-slide-2 {
   opacity: 0;
-  animation: portalSlide2In 0.8s 2.4s ease forwards;
+  animation: portalSlide2In 1.4s 3.4s cubic-bezier(0.16,1,0.3,1) forwards;
 }
 @keyframes portalSlide2In {
   from { opacity: 0; transform: translateY(20px) scale(0.96); filter: blur(6px); }
@@ -139,14 +139,14 @@
 .portal-mark {
   width: 60px; height: 60px;
   display: flex; align-items: center; justify-content: center;
-  animation: portalMarkIn 0.9s ease both;
+  animation: portalMarkIn 1.4s cubic-bezier(0.16,1,0.3,1) both;
 }
 .portal-mark-diamond {
   width: 44px; height: 44px;
   border: 1px solid var(--gold);
   transform: rotate(45deg);
   position: relative;
-  animation: portalMarkSpin 1.6s ease forwards;
+  animation: portalMarkSpin 2.2s cubic-bezier(0.34,1.2,0.4,1) forwards;
   box-shadow: 0 0 30px rgba(201,168,76,0.4);
 }
 .portal-mark-diamond::after {
@@ -179,16 +179,16 @@
 .portal-letter {
   opacity: 0;
   display: inline-block;
-  animation: portalLetterIn 0.5s ease forwards;
+  animation: portalLetterIn 0.9s cubic-bezier(0.16,1,0.3,1) forwards;
   text-shadow: 0 0 20px rgba(201,168,76,0.4);
 }
-.portal-letter:nth-child(1) { animation-delay: 0.5s; }
-.portal-letter:nth-child(2) { animation-delay: 0.58s; }
-.portal-letter:nth-child(3) { animation-delay: 0.66s; }
-.portal-letter:nth-child(4) { animation-delay: 0.74s; }
-.portal-letter:nth-child(5) { animation-delay: 0.82s; }
-.portal-letter:nth-child(6) { animation-delay: 0.90s; }
-.portal-letter:nth-child(7) { animation-delay: 0.98s; }
+.portal-letter:nth-child(1) { animation-delay: 0.9s; }
+.portal-letter:nth-child(2) { animation-delay: 1.0s; }
+.portal-letter:nth-child(3) { animation-delay: 1.1s; }
+.portal-letter:nth-child(4) { animation-delay: 1.2s; }
+.portal-letter:nth-child(5) { animation-delay: 1.3s; }
+.portal-letter:nth-child(6) { animation-delay: 1.4s; }
+.portal-letter:nth-child(7) { animation-delay: 1.5s; }
 @keyframes portalLetterIn {
   from { opacity: 0; transform: translateY(16px) scale(0.8); filter: blur(4px); }
   to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
@@ -201,7 +201,7 @@
   text-transform: uppercase;
   color: var(--text3);
   opacity: 0;
-  animation: portalTaglineIn 0.8s 1.3s ease forwards;
+  animation: portalTaglineIn 1.4s 1.6s ease forwards;
 }
 @keyframes portalTaglineIn {
   from { opacity: 0; letter-spacing: 0.6em; }
@@ -214,7 +214,7 @@
   inset: 0;
   background: #03020a;
   clip-path: circle(0% at 50% 50%);
-  animation: portalWipeOut 0.9s 5.2s cubic-bezier(0.7,0,0.3,1) forwards;
+  animation: portalWipeOut 1.4s 6.4s cubic-bezier(0.65,0,0.35,1) forwards;
   z-index: 3;
 }
 @keyframes portalWipeOut {
@@ -231,7 +231,7 @@ body.portal-active { overflow: hidden; height: 100vh; }
   backdrop-filter: blur(20px);
   display: flex; align-items: center; justify-content: center; padding: 24px;
   opacity: 0;
-  animation: disclaimerFadeIn 0.6s 6.1s ease forwards;
+  animation: disclaimerFadeIn 0.8s 7.8s ease forwards;
 }
 .disclaimer-overlay.hidden { display: none; }
 @keyframes disclaimerFadeIn { to { opacity: 1; } }
@@ -804,10 +804,10 @@ if (hasSeenPortal && portalIntro) {
   setTimeout(() => {
     document.body.classList.remove('portal-active');
     portalIntro.classList.add('done');
-  }, 5000);
+  }, 7800);
   setTimeout(() => {
     portalIntro.remove();
-  }, 6100);
+  }, 8700);
 }
 
 // Rising particles in hero
